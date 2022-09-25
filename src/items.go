@@ -34,10 +34,11 @@ func (item *Item) process(line string) {
 	item.display = line
 
 	if options.pattern != nil {
-		tokens := options.pattern.FindAllString(line, 1)
-		if len(tokens) > 0 {
+		tokens := options.pattern.FindAllStringSubmatch(line, 1)
+		if len(tokens) > 0 && len(tokens[0]) > 0 {
 			// Highlight regexp in line
-			item.match = tokens[0]
+			last := len(tokens[0]) - 1
+			item.match = tokens[0][last]
 			item.display = strings.Replace(item.display, item.match, "[" + options.color + "]" + item.match + "[-]", 1)
 		}
 	}

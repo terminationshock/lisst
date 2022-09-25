@@ -55,10 +55,16 @@ rm test/EXIT
 echo "Test 9 OK"
 
 export LISST_COLOR=blue
+
 echo -e "test1\n  test2\n\n\ttest3\ttest3\n\n" | ./lisst test > test/RESULT
 echo -e "[blue]test[-]1\n  [blue]test[-]2\n    [blue]test[-]3    test3" > test/EXPECT
 diff test/RESULT test/EXPECT
 echo "Test 10 OK"
+
+echo -e "test1\n  test2\n\n\ttest3\ttest3\n\n" | ./lisst "t(est)" > test/RESULT
+echo -e "t[blue]est[-]1\n  t[blue]est[-]2\n    t[blue]est[-]3    test3" > test/EXPECT
+diff test/RESULT test/EXPECT
+echo "Test 11 OK"
 
 rm -r test
 
