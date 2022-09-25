@@ -28,10 +28,44 @@ func main() {
 	run(itemList, 0)
 }
 
+func printHelp() {
+	fmt.Println("Usage: COMMAND_IN | " + os.Args[0] + " PATTERN [COMMAND]\n")
+	fmt.Println("This program reads the output of COMMAND_IN from the pipe and displays all lines as")
+	fmt.Println("an interactive list. Each line is matched against a regular expression PATTERN. The")
+	fmt.Println("first match in each line is highlighted. When [Enter] is pressed, the given COMMAND")
+	fmt.Println("is executed with the highlighted match of the selected line as additional argument.")
+	fmt.Println("When the COMMAND returns, the list is displayed again.")
+	fmt.Println("\nExamples:\n")
+	fmt.Println("   git log | " + os.Args[0] + " \"\\b[0-9a-z]{40}\\b\" git show")
+	fmt.Println("   ...will display all commits, highlight all commit hashes, and execute")
+	fmt.Println("      `git show <commit hash>` when [Enter] is pressed.\n")
+	fmt.Println("   ls -1 | " + os.Args[0] + " \".+\" less")
+	fmt.Println("   ...will display all files in the directory and execute `less <file name>` when")
+	fmt.Println("      [Enter] is pressed.\n")
+	fmt.Println("   grep -r func | ./lisst \"^(.*):\" vi")
+	fmt.Println("   ...will recursively grep for \"func\" in all files, highlight all file names,")
+	fmt.Println("      and execute `vi <file name>` when [Enter] is pressed.")
+	fmt.Println("\nKey bindings:\n")
+	fmt.Println("   [q] or [Esc]      Quit")
+	fmt.Println("   [Up] and [Down]   Browse lines")
+	fmt.Println("   [Enter]           Execute COMMAND with PATTERN match as argument")
+	fmt.Println("\nEnvironment variable:\n")
+	fmt.Println("   LISST_COLOR       Set this variable to change the color for highlighting, which")
+	fmt.Println("                     defaults to \"red\". Assign \"-\" to disable highlighting.")
+}
+
 func readFromPipe() []string {
+	var input []string = nil
+
+	stat, _ := os.Stdin.Stat()
+	if (stat.Mode() & os.ModeCharDevice) != 0 {
+		fmt.Fprintln(os.Stderr, "Missing input")
+		printHelp()
+		os.Exit(1)
+	}
+
 	scanner := bufio.NewScanner(os.Stdin)
 
-	input := []string{}
 	for scanner.Scan() {
 		line := scanner.Text()
 		if strings.TrimSpace(line) != "" {

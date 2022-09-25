@@ -66,6 +66,11 @@ echo -e "t[blue]est[-]1\n  t[blue]est[-]2\n    t[blue]est[-]3    test3" > test/E
 diff test/RESULT test/EXPECT
 echo "Test 11 OK"
 
+! ./lisst 2> /dev/null > test/RESULT
+echo -e "foobar" | ./lisst --help > test/EXPECT
+diff test/RESULT test/EXPECT
+echo "Test 12 OK"
+
 rm -r test
 
 echo "SUCCESS"

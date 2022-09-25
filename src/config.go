@@ -17,21 +17,7 @@ type Config struct {
 
 func NewConfig(input []string) *Config {
 	if len(os.Args) > 1 && os.Args[1] == "--help" {
-		fmt.Println("Usage: COMMAND_IN | " + os.Args[0] + " PATTERN [COMMAND]")
-		fmt.Println("\nThis program displays the output of COMMAND_IN as interactive list")
-		fmt.Println("and opens COMMAND after a certain match has been selected.")
-		fmt.Println("   PATTERN    - Accepts regular expressions")
-		fmt.Println("              - Case insensitive (can be toggled with key [c])")
-		fmt.Println("   DIRECTORY  - Recursive search within this directory")
-		fmt.Println("              - Defaults to the current working directory")
-		fmt.Println("\nKey bindings:")
-		fmt.Println("   [q] or [Esc]      Quit")
-		fmt.Println("   [Up] and [Down]   Select a match")
-		fmt.Println("   [Enter]           Open the selected file with the editor (see variable EDITOR)")
-		fmt.Println("\nEnvironment variables:")
-		fmt.Println("   LISST_COLOR        - Highlight color for matches")
-		fmt.Println("                       - Assign \"-\" to disable highlighting")
-		fmt.Println("                       - Default: \"red\"")
+		printHelp()
 		os.Exit(0)
 	}
 
