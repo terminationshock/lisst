@@ -46,7 +46,12 @@ echo "foobar test1" > test/EXPECT
 diff test/RESULT test/EXPECT
 echo "Test 8 OK"
 
-! echo -e "something" | ./lisst some exit 1
+echo -e "#!/bin/sh\nexit 42" > test/EXIT
+chmod +x test/EXIT
+echo -e "something" | ./lisst some test/EXIT || echo "$?" > test/RESULT
+echo "42" > test/EXPECT
+diff test/RESULT test/EXPECT
+rm test/EXIT
 echo "Test 9 OK"
 
 export LISST_COLOR=blue
