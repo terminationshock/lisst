@@ -33,13 +33,13 @@ func (item *Item) process(line string) {
 	item.original = line
 	item.display = line
 
-	if options.pattern != nil {
-		tokens := options.pattern.FindAllStringSubmatch(line, 1)
+	if config.pattern != nil {
+		tokens := config.pattern.FindAllStringSubmatch(line, 1)
 		if len(tokens) > 0 && len(tokens[0]) > 0 {
-			// Highlight regexp in line
+			// Highlight first occurrence of regexp in line
 			last := len(tokens[0]) - 1
 			item.match = tokens[0][last]
-			item.display = strings.Replace(item.display, item.match, "[" + options.color + "]" + item.match + "[-]", 1)
+			item.display = strings.Replace(item.display, item.match, "[" + config.color + "]" + item.match + "[-]", 1)
 		}
 	}
 

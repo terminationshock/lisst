@@ -7,10 +7,10 @@ import (
 )
 
 func LaunchProgram(match string) {
-	args := options.programArgs
+	args := config.programArgs
 	args = append(args, match)
 
-	cmd := exec.Command(options.program, args...)
+	cmd := exec.Command(config.program, args...)
 
 	// Re-attach stdin to /dev/tty because of pipe input
 	stdin, err := os.Open("/dev/tty")
