@@ -55,7 +55,7 @@ func (list *ItemList) Get(index int) *Item {
     return &list.items[index]
 }
 
-func (list *ItemList) Debug() {
+func (list *ItemList) Print() {
 	for _, item := range list.items {
 		fmt.Println(item.display)
 	}

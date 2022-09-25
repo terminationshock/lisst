@@ -59,6 +59,7 @@ func readFromPipe() []string {
 
 	stat, _ := os.Stdin.Stat()
 	if (stat.Mode() & os.ModeCharDevice) != 0 {
+		// There is no pipe
 		fmt.Fprintln(os.Stderr, "Missing input")
 		printHelp()
 		os.Exit(1)
@@ -67,6 +68,7 @@ func readFromPipe() []string {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for scanner.Scan() {
+		// Read input line by line
 		line := scanner.Text()
 		if strings.TrimSpace(line) != "" {
 			input = append(input, line)
@@ -153,12 +155,13 @@ func (ui *Ui) fillList(itemList *ItemList, selectedIndex int) {
 	// Draw the status line
 	ui.setStatus()
 
-	if config.debug {
+	if config.test {
+		// Used for the tests
 		ui.app.Stop()
 		if config.program != "" && ui.list.GetItemCount() > 0 {
 			ui.itemList.Get(0).LaunchProgram()
 		} else {
-			itemList.Debug()
+			itemList.Print()
 		}
 		os.Exit(0)
 	}

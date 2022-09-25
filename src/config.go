@@ -12,7 +12,7 @@ type Config struct {
 	program string
 	programArgs []string
 	color string
-	debug bool
+	test bool
 }
 
 func NewConfig(input []string) *Config {
@@ -25,8 +25,8 @@ func NewConfig(input []string) *Config {
 		pattern: nil,
 		program: "",
 		programArgs: []string{},
-		color: "#ff0000",
-		debug: false,
+		color: "red",
+		test: false,
 	}
 
 	if len(os.Args) > 1 {
@@ -55,8 +55,8 @@ func NewConfig(input []string) *Config {
 		config.color = color
 	}
 
-	if os.Getenv("LISST_DEBUG") != "" {
-		config.debug = true
+	if os.Getenv("LISST_TEST") != "" {
+		config.test = true
 	}
 
 	return config
