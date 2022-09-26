@@ -13,9 +13,11 @@ build:
   stage: build
   script:
     - go build -o lisst src/*
+    - echo help | ./lisst --help > lisst-help
   artifacts:
     paths:
       - lisst
+      - lisst-help
 
 unit_tests:
   stage: test
