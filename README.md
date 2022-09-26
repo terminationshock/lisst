@@ -22,7 +22,17 @@ The first match in a line is highlighted. The enter key will trigger the upstrea
 An arbitrary number of command line arguments can be added to the command. The highlighted match in the selected line will be appended
 to this list of arguments.
 
-Further examples can be found in the output of `lisst --help`.
+The command to be run can also be an editor as shown in this example:
+
+```bash
+grep -r func | ./lisst "^(.*):" vi
+```
+
+Each match returned by grep will be shown in the list with each file name highlighted in red. When you press the enter key on a line,
+the editor `vi` will be launched and you can edit the file as usual. When you close the editor, the list will be visible again allowing
+you to edit the next file.
+
+More details can be found in the output of `lisst --help`.
 
 ## Building
 
@@ -31,7 +41,7 @@ or you can download the artifact of the latest commit from the `master` branch [
 
 ## Testing
 
-Unit tests are executed during the build process. However, you can also run the integration test suite with `./test.sh`.
+Unit tests are executed during the build process. You can also run the integration test suite with `./test.sh`.
 
 ## Licenses of dependencies
 
