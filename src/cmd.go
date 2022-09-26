@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 )
@@ -12,13 +11,13 @@ func LaunchProgram(match string) {
 
 	cmd := exec.Command(config.program, args...)
 
-	// Re-attach stdin to /dev/tty because of pipe input
+	// Try re-attaching stdin to /dev/tty because of pipe input
 	stdin, err := os.Open("/dev/tty")
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+	if err == nil {
+		cmd.Stdin = stdin
+	} else {
+		cmd.Stdin = os.Stdin
 	}
-	cmd.Stdin = stdin
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

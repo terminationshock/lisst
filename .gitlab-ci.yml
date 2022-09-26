@@ -1,0 +1,28 @@
+image: golang:1.19.1
+
+stages:
+  - build
+  - test
+
+before_script:
+  - echo "HOST " $(hostname)
+  - echo $CI_RUNNER_DESCRIPTION
+  - echo $CI_RUNNER_TAGS
+
+build:
+  stage: build
+  script:
+    - go build -o lisst src/*
+  artifacts:
+    paths:
+      - lisst
+
+unit_tests:
+  stage: test
+  script:
+    - go test ./...
+
+integration_tests:
+  stage: test
+  script:
+    - ./test.sh

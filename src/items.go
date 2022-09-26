@@ -39,7 +39,8 @@ func (item *Item) process(line string) {
 			// Highlight first occurrence of regexp in line
 			last := len(tokens[0]) - 1
 			item.match = tokens[0][last]
-			item.display = strings.Replace(item.display, item.match, "[" + config.color + "]" + item.match + "[-]", 1)
+			highlighted := strings.Replace(tokens[0][0], item.match, "[" + config.color + "]" + item.match + "[-]", 1)
+			item.display = strings.Replace(item.display, tokens[0][0], highlighted, 1)
 		}
 	}
 
