@@ -28,19 +28,19 @@ to this list of arguments.
 The following example demonstrates how an editor can be launched as command:
 
 ```bash
-grep -r func | ./lisst "^(.*):" vi
+grep -r func | lisst "^(.*):" vi
 ```
 
 All occurrences of `func` in all files in the current directory and all sub-directories will be displayed as a list with each file name highlighted in red.
 When you select a certain line and press the enter key, the editor `vi` will be launched and you can edit the file as usual. When you close the editor,
 the list will be visible again allowing you to edit the next file.
 
-More details can be found in the output of [`lisst --help`](https://gitlab.mpcdf.mpg.de/tmelson/lisst/-/jobs/artifacts/master/raw/lisst-help?job=build).
+More details can be found in the output of [`lisst --help`](https://gitlab.mpcdf.mpg.de/tmelson/lisst/-/jobs/artifacts/master/raw/lisst-help.txt?job=build).
 
 ## Building
 
 This program requires Go version 1.19 or later for building. You can build the self-contained executable yourself with `./build.sh`
-or you can download the artifact of the latest commit from the `master` branch [here](https://gitlab.mpcdf.mpg.de/tmelson/lisst/-/jobs/artifacts/master/raw/lisst?job=build).
+or you can download the artifact built from the latest commit of the `master` branch [here](https://gitlab.mpcdf.mpg.de/tmelson/lisst/-/jobs/artifacts/master/raw/lisst?job=build).
 
 ## Testing
 
@@ -48,8 +48,8 @@ Unit tests are executed during the build process. The integration test suite can
 
 ## License
 
-[MIT License](LICENSE)
+*lisst* is licensed under the [MIT License](LICENSE).
 
 ## Licenses of dependencies
 
-The provided executable depends on several modules. Their licenses are listed [here](LICENSES_DEPENDENCIES.md).
+*lisst* depends on several other Go packages. Their licenses are listed [here](LICENSES_DEPENDENCIES.md).
