@@ -55,8 +55,6 @@ func printHelp() {
 }
 
 func readFromPipe() []string {
-	var input []string = nil
-
 	stat, _ := os.Stdin.Stat()
 	if (stat.Mode() & os.ModeCharDevice) != 0 {
 		// There is no pipe
@@ -67,6 +65,7 @@ func readFromPipe() []string {
 
 	scanner := bufio.NewScanner(os.Stdin)
 
+	input := []string{}
 	for scanner.Scan() {
 		// Read input line by line
 		line := scanner.Text()

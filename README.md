@@ -2,7 +2,7 @@
 
 # lisst
 
-This tool displays the output of a program as an interactive list allowing you to launch another command with input from lines of interest.
+This tool displays the output of a program as an interactive list allowing you to launch another command for a selected line of interest.
 
 ## Usage
 
@@ -28,8 +28,8 @@ The command to be run can also be an editor as shown in this example:
 grep -r func | ./lisst "^(.*):" vi
 ```
 
-Each match returned by grep will be shown in the list with each file name highlighted in red. When you press the enter key on a line,
-the editor `vi` will be launched and you can edit the file as usual. When you close the editor, the list will be visible again allowing
+All occurrences of `func` in all files in the current directory and all sub-directories will be shown in the list with each file name highlighted in red.
+When you press the enter key on a line, the editor `vi` will be launched and you can edit the file as usual. When you close the editor, the list will be visible again allowing
 you to edit the next file.
 
 More details can be found in the output of `lisst --help`.
