@@ -38,7 +38,7 @@ func NewConfig() *Config {
 		var shortcuts = map[string]string{
 			"--line": "^.*$",
 			"--grep-filename": "^(.*?):",
-			"--git-commit": "\\b[0-9a-f]{7,40}\\b",
+			"--git-commit-hash": "\\b[0-9a-f]{7,40}\\b",
 		}
 		value, ok := shortcuts[os.Args[1]]
 		if ok {

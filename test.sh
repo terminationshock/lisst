@@ -71,12 +71,27 @@ function run() {
         echo "foobar test1" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
+    13)
+        echo -e "test1 test2\ntest3" | ./lisst --line > test/RESULT_$1
+        echo -e "[red]test1 test2[-]\n[red]test3[-]" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
+    14)
+        echo -e "test1234 abcdef1\n0987654321 1234567\n--git-commit-hash" | ./lisst --git-commit-hash > test/RESULT_$1
+        echo -e "test1234 [red]abcdef1[-]\n[red]0987654321[-] 1234567\n--git-commit-hash" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
+    15)
+        echo -e "/dir/file.dat:content\n/another/dir/file.txt:42:content" | ./lisst --grep-filename > test/RESULT_$1
+        echo -e "[red]/dir/file.dat[-]:content\n[red]/another/dir/file.txt[-]:42:content" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
     esac
 }
 
 if [ $# -eq 0 ]; then
     result=0
-    for i in {1..12}; do
+    for i in {1..15}; do
         echo "Test $i"
         run $i || { result=1; echo "   FAILED"; }
     done

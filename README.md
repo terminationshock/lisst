@@ -35,8 +35,13 @@ All occurrences of `func` in all files in the current directory and all sub-dire
 When you select a certain line and press the enter key, the editor `vi` will be launched and you can edit the file as usual. When you close the editor,
 the list will be visible again allowing you to edit the next file.
 
-You can use human-readable keywords for frequently used patterns. `lisst --line`, for example, will match the whole line. Another useful keyword is `lisst --git-commit`,
-which will match any Git commit hash. See [`lisst --help`](https://gitlab.mpcdf.mpg.de/tmelson/lisst/-/jobs/artifacts/master/raw/lisst-help.txt?job=build)
+You can use human-readable keywords for frequently used patterns. `lisst --line`, for example, will match the whole line. The previous example can be simplified like this:
+
+```bash
+grep -r func | lisst --grep-filename vi
+```
+
+See [`lisst --help`](https://gitlab.mpcdf.mpg.de/tmelson/lisst/-/jobs/artifacts/master/raw/lisst-help.txt?job=build)
 for a complete list of supported keywords and more useful examples.
 
 ## Building
