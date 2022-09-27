@@ -8,8 +8,8 @@ function run() {
     case $1 in
     1)
         ! ./lisst 2> /dev/null > test/RESULT_$1
-        echo -e "foobar" | ./lisst --help > test/EXPECT_$1
-        diff test/RESULT_$1 test/EXPECT_$1 || echo "   SKIPPED" # Works in interactive shells only
+        ./lisst --help > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
         ;;
     2)
         ! echo -e "" | ./lisst 2> test/RESULT_$1

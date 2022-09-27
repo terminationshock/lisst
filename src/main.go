@@ -21,8 +21,8 @@ type Ui struct {
 var config *Config
 
 func main() {
+	config = NewConfig()
 	input := readFromPipe()
-	config = NewConfig(input)
 	itemList := NewItemList(input)
 
 	run(itemList, 0)

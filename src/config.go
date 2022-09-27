@@ -16,7 +16,7 @@ type Config struct {
 	test bool
 }
 
-func NewConfig(input []string) *Config {
+func NewConfig() *Config {
 	if len(os.Args) > 1 && os.Args[1] == "--help" {
 		printHelp()
 		os.Exit(0)
