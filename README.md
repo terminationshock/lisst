@@ -25,17 +25,19 @@ The first match within a line is highlighted. The enter key will trigger the ups
 An arbitrary number of command line arguments can be added to the command. The highlighted match in the selected line will be appended
 to this list of arguments.
 
-The following example demonstrates how an editor can be launched as command:
+The following example demonstrates how to efficiently edit many files:
 
 ```bash
-grep -r func | lisst "^(.*):" vi
+grep -r func | lisst "^(.*?):" vi
 ```
 
 All occurrences of `func` in all files in the current directory and all sub-directories will be displayed as a list with each file name highlighted in red.
 When you select a certain line and press the enter key, the editor `vi` will be launched and you can edit the file as usual. When you close the editor,
 the list will be visible again allowing you to edit the next file.
 
-More details can be found in the output of [`lisst --help`](https://gitlab.mpcdf.mpg.de/tmelson/lisst/-/jobs/artifacts/master/raw/lisst-help.txt?job=build).
+You can use human-readable keywords for frequently used patterns. `lisst --line`, for example, will match the whole line. Another useful keyword is `lisst --git-commit`,
+which will match any Git commit hash. See [`lisst --help`](https://gitlab.mpcdf.mpg.de/tmelson/lisst/-/jobs/artifacts/master/raw/lisst-help.txt?job=build)
+for a complete list of supported keywords and more useful examples.
 
 ## Building
 

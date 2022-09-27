@@ -17,11 +17,6 @@ type Config struct {
 }
 
 func NewConfig() *Config {
-	if len(os.Args) > 1 && os.Args[1] == "--help" {
-		printHelp()
-		os.Exit(0)
-	}
-
 	config = &Config {
 		pattern: nil,
 		program: "",
@@ -32,8 +27,26 @@ func NewConfig() *Config {
 	}
 
 	if len(os.Args) > 1 {
+		if os.Args[1] == "--help" {
+			PrintHelp()
+			os.Exit(0)
+		}
+
+		inputPattern := os.Args[1]
+
+		// Define human-readable keywords for frequently used patterns
+		var shortcuts = map[string]string{
+			"--line": "^.*$",
+			"--grep-filename": "^(.*?):",
+			"--git-commit": "\\b[0-9a-f]{7,40}\\b",
+		}
+		value, ok := shortcuts[os.Args[1]]
+		if ok {
+			inputPattern = value
+		}
+
 		// Regex pattern
-		pattern, err := regexp.Compile(os.Args[1])
+		pattern, err := regexp.Compile(inputPattern)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "Invalid regular expression")
 			os.Exit(1)
