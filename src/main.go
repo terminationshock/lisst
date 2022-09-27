@@ -178,7 +178,7 @@ func (ui *Ui) setStatus() {
 	}
 	info += fmt.Sprintf("Line %d of %d", ui.list.GetCurrentItem() + 1, ui.list.GetItemCount())
 	if config.executed != "" {
-		info += "Most recently executed: " + space + config.executed
+		info += space + "Most recently executed: " + config.executed
 	}
 
 	ui.status.SetText(info)
