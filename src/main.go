@@ -45,7 +45,7 @@ func printHelp() {
 	fmt.Println("\n   grep -r func | ./lisst \"^(.*):\" vi")
 	fmt.Println("   ...will recursively grep for \"func\" in all files, highlight all file names,")
 	fmt.Println("      and execute `vi <file name>` when [Enter] is pressed.")
-	fmt.Println("\n   squeue -u $USER | ./lisst \"^([0-9]{1,})\\b\" scancel")
+	fmt.Println("\n   squeue -u $USER | ./lisst \"^\\s*([0-9]{1,})\\b\" scancel")
 	fmt.Println("   ...will query SLURM for all running jobs of the current user, highlight all job IDs,")
 	fmt.Println("      and execute `scancel <job ID>` when [Enter] is pressed.")
 	fmt.Println("\nKey bindings:")
