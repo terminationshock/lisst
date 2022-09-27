@@ -11,6 +11,7 @@ type Config struct {
 	pattern *regexp.Regexp
 	program string
 	programArgs []string
+	executed string
 	color string
 	test bool
 }
@@ -25,6 +26,7 @@ func NewConfig(input []string) *Config {
 		pattern: nil,
 		program: "",
 		programArgs: []string{},
+		executed: "",
 		color: "red",
 		test: false,
 	}

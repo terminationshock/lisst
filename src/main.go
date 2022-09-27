@@ -170,12 +170,17 @@ func (ui *Ui) fillList(itemList *ItemList, selectedIndex int) {
 }
 
 func (ui *Ui) setStatus() {
-	info := ""
+	info := "\n"
+	space := "     "
+
 	if config.pattern != nil {
-		info = fmt.Sprintf("\n%s     Line %d of %d", config.pattern, ui.list.GetCurrentItem() + 1, ui.list.GetItemCount())
-	} else {
-		info = fmt.Sprintf("\nLine %d of %d", ui.list.GetCurrentItem() + 1, ui.list.GetItemCount())
+		info += fmt.Sprintf("%s%s", config.pattern, space)
 	}
+	info += fmt.Sprintf("Line %d of %d", ui.list.GetCurrentItem() + 1, ui.list.GetItemCount())
+	if config.executed != "" {
+		info += "Most recently executed: " + space + config.executed
+	}
+
 	ui.status.SetText(info)
 }
 

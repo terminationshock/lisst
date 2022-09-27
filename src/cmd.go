@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func LaunchProgram(match string) {
@@ -34,4 +36,6 @@ func LaunchProgram(match string) {
 			os.Exit(1)
 		}
 	}
+
+	config.executed = fmt.Sprintf("%s %s", config.program, strings.Join(args, " "))
 }
