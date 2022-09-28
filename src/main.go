@@ -69,8 +69,8 @@ func PrintHelp() {
 	fmt.Println("                       will query SLURM for all running jobs of the current user,")
 	fmt.Println("                       highlight all job IDs, and execute `scontrol show job <job ID>`")
 	fmt.Println("                       when [Enter] is pressed. Note the additional flag")
-	fmt.Println("                       `--show-output` to view the output of `scontrol` instead of")
-	fmt.Println("                       printing it to the terminal in the background.")
+	fmt.Println("                       `--show-output` to display the output of `scontrol` instead")
+	fmt.Println("                       of printing it to the terminal in the background.")
 	fmt.Println("\nEnvironment variable:")
 	fmt.Println("\n   LISST_COLOR         Set this variable to change the color for highlighting, which")
 	fmt.Println("                       defaults to \"red\". Assign \"-\" to disable highlighting.")
@@ -109,15 +109,13 @@ func readFromPipe() []string {
 	return input
 }
 
-func run(itemList *ItemList, selectedIndex int, commandExecuted bool, commandOutput string) {
+func run(itemList *ItemList, selectedIndex int, programExecuted bool, programOutput string) {
 	ui := initUi()
 	ui.fillList(itemList, selectedIndex)
-	ui.setStatus(commandExecuted)
+	ui.setStatus(programExecuted)
 
-	if config.showProgramOutput && commandExecuted {
-		ui.text.SetText(commandOutput)
-		ui.app.SetRoot(ui.text, true)
-		ui.textVisible = true
+	if programExecuted && config.showProgramOutput {
+		ui.setText(programOutput)
 	}
 
 	err := ui.app.Run()
@@ -195,7 +193,10 @@ func (ui *Ui) fillList(itemList *ItemList, selectedIndex int) {
 		// Used for the tests
 		ui.app.Stop()
 		if config.program != "" && ui.list.GetItemCount() > 0 {
-			ui.itemList.Get(0).LaunchProgram()
+			output := ui.itemList.Get(0).LaunchProgram()
+			if output != "" {
+				fmt.Println(output)
+			}
 		} else {
 			itemList.Print()
 		}
@@ -203,7 +204,7 @@ func (ui *Ui) fillList(itemList *ItemList, selectedIndex int) {
 	}
 }
 
-func (ui *Ui) setStatus(commandExecuted bool) {
+func (ui *Ui) setStatus(programExecuted bool) {
 	info := "\n"
 	space := "     "
 
@@ -213,11 +214,17 @@ func (ui *Ui) setStatus(commandExecuted bool) {
 
 	index := ui.list.GetCurrentItem()
 	info += fmt.Sprintf("Line %d of %d", index + 1, ui.list.GetItemCount())
-	if config.program != "" && !commandExecuted {
+	if config.program != "" && !programExecuted {
 		info += space + PrintCommand(ui.itemList.Get(index).match)
 	}
 
 	ui.status.SetText(info)
+}
+
+func (ui *Ui) setText(programOutput string) {
+	ui.text.SetText(programOutput)
+	ui.app.SetRoot(ui.text, true)
+	ui.textVisible = true
 }
 
 // Signature of this function must not be changed

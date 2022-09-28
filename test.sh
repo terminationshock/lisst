@@ -85,15 +85,30 @@ function run() {
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     16)
+        echo -e "/dir/file.dat:content\n/another/dir/file.txt:42:content" | ./lisst --grep-filename echo > test/RESULT_$1
+        echo -e "/dir/file.dat" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
+    17)
         ! echo -e "test1\nztest2" | ./lisst "test" invalid 2> test/RESULT_$1
         grep -q "file not found" test/RESULT_$1
+        ;;
+    18)
+        echo -e "/dir/file.dat:content\n/another/dir/file.txt:42:content" | ./lisst --show-output --grep-filename echo -n foo > test/RESULT_$1
+        echo -e "foo /dir/file.dat" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
+    19)
+        echo -e "/dir/file.dat:content\n/another/dir/file.txt:42:content" | ./lisst --grep-filename --show-output echo -n foo > test/RESULT_$1
+        echo -e "foo /dir/file.dat" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
         ;;
     esac
 }
 
 if [ $# -eq 0 ]; then
     result=0
-    for i in {1..16}; do
+    for i in {1..19}; do
         echo "Test $i"
         run $i || { result=1; echo "   FAILED"; }
     done
