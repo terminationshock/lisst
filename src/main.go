@@ -25,7 +25,7 @@ func main() {
 	input := readFromPipe()
 	itemList := NewItemList(input)
 
-	run(itemList, 0)
+	run(itemList, 0, false)
 }
 
 func PrintHelp() {
@@ -102,9 +102,10 @@ func readFromPipe() []string {
 	return input
 }
 
-func run(itemList *ItemList, selectedIndex int) {
+func run(itemList *ItemList, selectedIndex int, commandExecuted bool) {
 	ui := initUi()
 	ui.fillList(itemList, selectedIndex)
+	ui.setStatus(commandExecuted)
 
 	err := ui.app.Run()
 	if err != nil {
@@ -166,9 +167,6 @@ func (ui *Ui) fillList(itemList *ItemList, selectedIndex int) {
 		ui.list.SetCurrentItem(selectedIndex)
 	}
 
-	// Draw the status line
-	ui.setStatus()
-
 	if config.test {
 		// Used for the tests
 		ui.app.Stop()
@@ -181,16 +179,18 @@ func (ui *Ui) fillList(itemList *ItemList, selectedIndex int) {
 	}
 }
 
-func (ui *Ui) setStatus() {
+func (ui *Ui) setStatus(commandExecuted bool) {
 	info := "\n"
 	space := "     "
 
 	if config.pattern != nil {
 		info += fmt.Sprintf("%s%s", config.pattern, space)
 	}
-	info += fmt.Sprintf("Line %d of %d", ui.list.GetCurrentItem() + 1, ui.list.GetItemCount())
-	if config.executed != "" {
-		info += space + "Most recently executed: " + config.executed
+
+	index := ui.list.GetCurrentItem()
+	info += fmt.Sprintf("Line %d of %d", index + 1, ui.list.GetItemCount())
+	if config.program != "" && !commandExecuted {
+		info += space + PrintCommand(ui.itemList.Get(index).match)
 	}
 
 	ui.status.SetText(info)
@@ -198,7 +198,7 @@ func (ui *Ui) setStatus() {
 
 // Signature of this function must not be changed
 func (ui *Ui) lineSelected(index int, _ string, _ string, _ rune) {
-	ui.setStatus()
+	ui.setStatus(false)
 }
 
 // Signature of this function must not be changed
@@ -210,6 +210,6 @@ func (ui *Ui) lineClicked(index int, _ string, _ string, _ rune) {
 		item.LaunchProgram()
 
 		// Restart the list view
-		run(ui.itemList, index)
+		run(ui.itemList, index, true)
 	}
 }

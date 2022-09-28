@@ -8,9 +8,7 @@ import (
 )
 
 func LaunchProgram(match string) {
-	args := config.programArgs
-	args = append(args, match)
-
+	args := prepareArguments(match)
 	cmd := exec.Command(config.program, args...)
 
 	// Try re-attaching stdin to /dev/tty because of pipe input
@@ -36,6 +34,14 @@ func LaunchProgram(match string) {
 			os.Exit(1)
 		}
 	}
+}
 
-	config.executed = fmt.Sprintf("%s %s", config.program, strings.Join(args, " "))
+func PrintCommand(match string) string {
+	args := prepareArguments(match)
+	return fmt.Sprintf("%s %s", config.program, strings.Join(args, " "))
+}
+
+func prepareArguments(match string) []string {
+	args := config.programArgs
+	return append(args, match)
 }
