@@ -7,6 +7,8 @@
 
 This tool displays the output of a program as an interactive list allowing you to launch another command for a selected line of interest.
 
+![Screenshot](lisst.gif)
+
 ## Usage
 
 The usage of *lisst* can best be explained with an example:
