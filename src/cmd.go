@@ -1,13 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
 	"strings"
 )
 
-func LaunchProgram(match string) {
+func LaunchProgram(match string) string {
 	args := prepareArguments(match)
 	cmd := exec.Command(config.program, args...)
 
@@ -15,38 +16,20 @@ func LaunchProgram(match string) {
 	stdin, err := os.Open("/dev/tty")
 	if err == nil {
 		cmd.Stdin = stdin
+		defer stdin.Close()
 	} else {
 		cmd.Stdin = os.Stdin
 	}
 
-	var less *exec.Cmd
+	var buffer bytes.Buffer
 	if config.showProgramOutput {
-		// Open 'less' for displaying the output of cmd
-		less = exec.Command("less")
-
-		// Pipe the output of cmd into less
-		less.Stdin, err = cmd.StdoutPipe()
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
-
-		less.Stdout = os.Stdout
-
-		// Start less now
-		err = less.Start()
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
+		cmd.Stdout = &buffer
 	} else {
 		cmd.Stdout = os.Stdout
 	}
-
 	cmd.Stderr = os.Stderr
 
 	err = cmd.Run()
-	stdin.Close()
 
 	if err != nil {
 		// Try to forward the command's exit code
@@ -59,14 +42,7 @@ func LaunchProgram(match string) {
 		}
 	}
 
-	if config.showProgramOutput {
-		// Wait until all output has been sent over the pipe
-		err = less.Wait()
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
-	}
+	return buffer.String()
 }
 
 func PrintCommand(match string) string {

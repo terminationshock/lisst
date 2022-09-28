@@ -85,12 +85,8 @@ function run() {
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     16)
-        local PATH=$PWD/test:$PATH
-        echo -e "#!/bin/sh\nwhile read line; do echo piped \$line; done" > test/less
-        chmod +x test/less
-        echo -e "test1 test2\ntest3" | ./lisst --pipe-less "test[1-9]" echo > test/RESULT_$1
-        echo "piped test1" > test/EXPECT_$1
-        diff test/RESULT_$1 test/EXPECT_$1 && rm test/less
+        ! echo -e "test1\nztest2" | ./lisst "test" invalid 2> test/RESULT_$1
+        grep -q "file not found" test/RESULT_$1
         ;;
     esac
 }

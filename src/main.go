@@ -13,6 +13,8 @@ type Ui struct {
 	app *tview.Application
 	flex *tview.Flex
 	list *tview.List
+	text *tview.TextView
+	textVisible bool
 	status *tview.TextView
 	config *Config
 	itemList *ItemList
@@ -25,7 +27,7 @@ func main() {
 	input := readFromPipe()
 	itemList := NewItemList(input)
 
-	run(itemList, 0, false)
+	run(itemList, 0, false, "")
 }
 
 func PrintHelp() {
@@ -44,7 +46,7 @@ func PrintHelp() {
 	fmt.Println("   --git-commit-hash   Match a Git commit hash")
 	fmt.Println("   --grep-filename     Match the filename prefix in the output of `grep`")
 	fmt.Println("\nOther keyword OPTIONS:")
-	fmt.Println("\n   --pipe-less         Pipe the output of COMMAND into `less`")
+	fmt.Println("\n   --show-output       Show the output of COMMAND")
 	fmt.Println("   --help              Display this help")
 	fmt.Println("\nExamples:")
 	fmt.Println("\n   git log --oneline | " + os.Args[0] + " \"\\b[0-9a-z]{7,40}\\b\" git show")
@@ -63,12 +65,12 @@ func PrintHelp() {
 	fmt.Println("                       will recursively grep for \"func\" in all files, highlight all")
 	fmt.Println("                       file names, and execute `vi <file name>` when [Enter] is")
 	fmt.Println("                       pressed.")
-	fmt.Println("\n   squeue -u $USER | ./lisst --pipe-less \"^\\s*([0-9]{1,})\\b\" scontrol show job")
+	fmt.Println("\n   squeue -u $USER | ./lisst --show-output \"^\\s*([0-9]{1,})\\b\" scontrol show job")
 	fmt.Println("                       will query SLURM for all running jobs of the current user,")
 	fmt.Println("                       highlight all job IDs, and execute `scontrol show job <job ID>`")
-	fmt.Println("                       when [Enter] is pressed. Note the additional flag `--help` to")
-	fmt.Println("                       view the output of `scontrol` instead of printing it to the")
-	fmt.Println("                       terminal in the background.")
+	fmt.Println("                       when [Enter] is pressed. Note the additional flag")
+	fmt.Println("                       `--show-output` to view the output of `scontrol` instead of")
+	fmt.Println("                       printing it to the terminal in the background.")
 	fmt.Println("\nEnvironment variable:")
 	fmt.Println("\n   LISST_COLOR         Set this variable to change the color for highlighting, which")
 	fmt.Println("                       defaults to \"red\". Assign \"-\" to disable highlighting.")
@@ -107,10 +109,16 @@ func readFromPipe() []string {
 	return input
 }
 
-func run(itemList *ItemList, selectedIndex int, commandExecuted bool) {
+func run(itemList *ItemList, selectedIndex int, commandExecuted bool, commandOutput string) {
 	ui := initUi()
 	ui.fillList(itemList, selectedIndex)
 	ui.setStatus(commandExecuted)
+
+	if config.showProgramOutput && commandExecuted {
+		ui.text.SetText(commandOutput)
+		ui.app.SetRoot(ui.text, true)
+		ui.textVisible = true
+	}
 
 	err := ui.app.Run()
 	if err != nil {
@@ -125,8 +133,13 @@ func initUi() *Ui {
 	ui.app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		// Keys for quitting the program
 		if event.Rune() == 'q' || event.Key() == tcell.KeyEsc {
-			ui.app.Stop()
-			os.Exit(0)
+			if ui.textVisible {
+				ui.app.SetRoot(ui.flex, true)
+				ui.textVisible = false
+			} else {
+				ui.app.Stop()
+				os.Exit(0)
+			}
 		}
 		return event
 	})
@@ -154,6 +167,12 @@ func initUi() *Ui {
 	ui.status.SetScrollable(false)
 	ui.status.SetWrap(false)
 	ui.flex.AddItem(ui.status, 2, 1, false)
+
+	// Text field for command output
+	ui.text = tview.NewTextView()
+	ui.text.SetScrollable(true)
+	ui.text.SetWrap(false)
+	ui.textVisible = false
 
 	ui.app.SetRoot(ui.flex, true)
 	return ui
@@ -212,9 +231,9 @@ func (ui *Ui) lineClicked(index int, _ string, _ string, _ rune) {
 	if item.match != "" {
 		ui.app.Stop()
 
-		item.LaunchProgram()
+		output := item.LaunchProgram()
 
 		// Restart the list view
-		run(ui.itemList, index, true)
+		run(ui.itemList, index, true, output)
 	}
 }
