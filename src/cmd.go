@@ -37,6 +37,9 @@ func LaunchProgram(match string) {
 }
 
 func PrintCommand(match string) string {
+	if match == "" {
+		return ""
+	}
 	args := prepareArguments(match)
 	return fmt.Sprintf("%s %s", config.program, strings.Join(args, " "))
 }
