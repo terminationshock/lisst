@@ -222,6 +222,7 @@ func (ui *Ui) setStatus(programExecuted bool) {
 }
 
 func (ui *Ui) setText(programOutput string) {
+	// Fill the text view with the output of the program
 	ui.text.SetText(programOutput)
 	ui.app.SetRoot(ui.text, true)
 	ui.textVisible = true
@@ -238,6 +239,7 @@ func (ui *Ui) lineClicked(index int, _ string, _ string, _ rune) {
 	if item.match != "" {
 		ui.app.Stop()
 
+		// Run the program and fetch the output if it is not writing to stdout
 		output := item.LaunchProgram()
 
 		// Restart the list view
