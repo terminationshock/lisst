@@ -14,18 +14,18 @@ This tool displays the output of a program as an interactive list allowing you t
 The usage of *lisst* can best be explained with an example:
 
 ```bash
-git log | lisst "[0-9a-f]{40}" git show
+git log --oneline | lisst "[0-9a-f]{7,40}" git show
 ```
 
 This command will pipe the output of `git log` into *lisst*. It will open an interactive list which you can browse with the arrow keys.
-Each commit hash matching the regular expression `[0-9a-f]{40}` will be highlighted in red. When you select a line containing a commit hash
+Each commit hash matching the regular expression `[0-9a-f]{7,40}` will be highlighted in red. When you select a line containing a commit hash
 and hit the enter key, the command `git show <commit hash>` will be executed. When this command returns, the list will be shown again allowing you
 to select the next line of interest.
 
-*lisst* accepts all output piped into it and splits it on line breaks. Each line is matched against the given regular expression.
-The first match within a line is highlighted. The enter key will trigger the upstream command only if the selected line contains a match.
-An arbitrary number of command line arguments can be added to the command. The highlighted match in the selected line will be appended
-to this list of arguments.
+*lisst* accepts all non-empty output piped into it and splits it on line breaks. Each line is matched against the given regular expression.
+The first match within a line is highlighted. The enter key triggers the upstream command only if the selected line contains a match.
+An arbitrary number of command line arguments can be added to the command. The highlighted match in the selected line is appended
+to this list of arguments. The status bar at the bottom displays the command that is about to be executed when the enter key is pressed.
 
 The following example demonstrates how to efficiently edit many files:
 
@@ -37,12 +37,8 @@ All occurrences of `func` in all files in the current directory and all sub-dire
 When you select a certain line and press the enter key, the editor `vi` will be launched and you can edit the file as usual. When you close the editor,
 the list will be visible again allowing you to edit the next file.
 
-You can use human-readable keywords for frequently used patterns. `lisst --line`, for example, will match the whole line. The previous example can be simplified like this:
-
-```bash
-grep -r func | lisst --grep-filename vi
-```
-
+You can use human-readable keywords for frequently used patterns. In the screencast shown above, for example,
+the keyword `--git-commit-hash` is used for convenience instead of the actual regular expression.
 See [`lisst --help`](https://gitlab.mpcdf.mpg.de/tmelson/lisst/-/jobs/artifacts/master/raw/lisst-help.txt?job=build)
 for a complete list of supported keywords and more useful examples.
 

@@ -40,8 +40,7 @@ function run() {
         export LISST_COLOR=blue
         echo -e "test1\n  test2\n\n\ttest3\ttest3\n\n" | ./lisst test > test/RESULT_$1
         echo -e "[blue]test[-]1\n  [blue]test[-]2\n    [blue]test[-]3    test3" > test/EXPECT_$1
-        diff test/RESULT_$1 test/EXPECT_$1
-        unset LISST_COLOR
+        diff test/RESULT_$1 test/EXPECT_$1 && unset LISST_COLOR
         ;;
     8)
         echo -e "test1\n  test2\n\n\ttest3\ttest3\n\n" | ./lisst "t(est)" > test/RESULT_$1
@@ -58,8 +57,7 @@ function run() {
         chmod +x test/EXIT
         echo -e "something" | ./lisst some test/EXIT || echo "$?" > test/RESULT_$1
         echo "42" > test/EXPECT_$1
-        diff test/RESULT_$1 test/EXPECT_$1
-        rm test/EXIT
+        diff test/RESULT_$1 test/EXPECT_$1 && rm test/EXIT
         ;;
     11)
         echo -e "test1 test2\ntest3" | ./lisst "test[1-9]" echo > test/RESULT_$1
@@ -86,12 +84,20 @@ function run() {
         echo -e "[red]/dir/file.dat[-]:content\n[red]/another/dir/file.txt[-]:42:content" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
+    16)
+        local PATH=$PWD/test:$PATH
+        echo -e "#!/bin/sh\nwhile read line; do echo piped \$line; done" > test/less
+        chmod +x test/less
+        echo -e "test1 test2\ntest3" | ./lisst --pipe-less "test[1-9]" echo > test/RESULT_$1
+        echo "piped test1" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1 && rm test/less
+        ;;
     esac
 }
 
 if [ $# -eq 0 ]; then
     result=0
-    for i in {1..15}; do
+    for i in {1..16}; do
         echo "Test $i"
         run $i || { result=1; echo "   FAILED"; }
     done

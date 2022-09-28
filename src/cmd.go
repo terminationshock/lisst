@@ -19,7 +19,30 @@ func LaunchProgram(match string) {
 		cmd.Stdin = os.Stdin
 	}
 
-	cmd.Stdout = os.Stdout
+	var less *exec.Cmd
+	if config.showProgramOutput {
+		// Open 'less' for displaying the output of cmd
+		less = exec.Command("less")
+
+		// Pipe the output of cmd into less
+		less.Stdin, err = cmd.StdoutPipe()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+		less.Stdout = os.Stdout
+
+		// Start less now
+		err = less.Start()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+	} else {
+		cmd.Stdout = os.Stdout
+	}
+
 	cmd.Stderr = os.Stderr
 
 	err = cmd.Run()
@@ -31,6 +54,16 @@ func LaunchProgram(match string) {
 		if ok {
 			os.Exit(exitError.ExitCode())
 		} else {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+	}
+
+	if config.showProgramOutput {
+		// Wait until all output has been sent over the pipe
+		err = less.Wait()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
 	}
