@@ -48,7 +48,7 @@ func (item *Item) process(line string) {
 	item.display = strings.ReplaceAll(item.display, "\t", strings.Repeat(" ", tabSize))
 }
 
-func (item *Item) LaunchProgram() string {
+func (item *Item) LaunchProgram() (string, string) {
 	return LaunchProgram(item.match)
 }
 

@@ -11,13 +11,23 @@ import (
 
 type Ui struct {
 	app *tview.Application
+	pageList *PageList
+	pageText *PageText
+	pageTextVisible bool
+	config *Config
+}
+
+type PageList struct {
 	flex *tview.Flex
 	list *tview.List
-	text *tview.TextView
-	textVisible bool
 	status *tview.TextView
-	config *Config
 	itemList *ItemList
+}
+
+type PageText struct {
+	flex *tview.Flex
+	text *tview.TextView
+	status *tview.TextView
 }
 
 var config *Config
@@ -27,7 +37,7 @@ func main() {
 	input := readFromPipe()
 	itemList := NewItemList(input)
 
-	run(itemList, 0, false, "")
+	run(itemList, 0, "", "")
 }
 
 func PrintHelp() {
@@ -109,13 +119,13 @@ func readFromPipe() []string {
 	return input
 }
 
-func run(itemList *ItemList, selectedIndex int, programExecuted bool, programOutput string) {
+func run(itemList *ItemList, selectedIndex int, programExecuted string, programOutput string) {
 	ui := initUi()
 	ui.fillList(itemList, selectedIndex)
-	ui.setStatus(programExecuted)
+	ui.pageList.setStatus(programExecuted)
 
-	if programExecuted && config.showProgramOutput {
-		ui.setText(programOutput)
+	if programExecuted != "" && config.showProgramOutput {
+		ui.setText(programExecuted, programOutput)
 	}
 
 	err := ui.app.Run()
@@ -126,14 +136,18 @@ func run(itemList *ItemList, selectedIndex int, programExecuted bool, programOut
 }
 
 func initUi() *Ui {
-	ui := &Ui{}
+	ui := &Ui{
+		pageList: &PageList{},
+		pageText: &PageText{},
+	}
+
 	ui.app = tview.NewApplication()
 	ui.app.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		// Keys for quitting the program
 		if event.Rune() == 'q' || event.Key() == tcell.KeyEsc {
-			if ui.textVisible {
-				ui.app.SetRoot(ui.flex, true)
-				ui.textVisible = false
+			if ui.pageTextVisible {
+				ui.app.SetRoot(ui.pageList.flex, true)
+				ui.pageTextVisible = false
 			} else {
 				ui.app.Stop()
 				os.Exit(0)
@@ -142,58 +156,70 @@ func initUi() *Ui {
 		return event
 	})
 
-	// Container for the widgets
-	ui.flex = tview.NewFlex()
-	ui.flex.SetDirection(tview.FlexRow)
+	// Container for the list and its status bar
+	ui.pageList.flex = tview.NewFlex()
+	ui.pageList.flex.SetDirection(tview.FlexRow)
+	ui.pageTextVisible = false
 
 	// List for the matches
-	ui.list = tview.NewList()
-	ui.list.ShowSecondaryText(false)
-	ui.list.SetWrapAround(false)
-	ui.list.SetHighlightFullLine(true)
-	ui.flex.AddItem(ui.list, 0, 1, true)
+	ui.pageList.list = tview.NewList()
+	ui.pageList.list.ShowSecondaryText(false)
+	ui.pageList.list.SetWrapAround(false)
+	ui.pageList.list.SetHighlightFullLine(true)
+	ui.pageList.flex.AddItem(ui.pageList.list, 0, 1, true)
 
 	// Invoked when a line is highlighted
-	ui.list.SetChangedFunc(ui.lineSelected)
+	ui.pageList.list.SetChangedFunc(ui.pageList.lineSelected)
 	if config.program != "" {
 		// Invoked when enter is pressed on a line
-		ui.list.SetSelectedFunc(ui.lineClicked)
+		ui.pageList.list.SetSelectedFunc(ui.lineClicked)
 	}
 
 	// Status line at the bottom
-	ui.status = tview.NewTextView()
-	ui.status.SetScrollable(false)
-	ui.status.SetWrap(false)
-	ui.flex.AddItem(ui.status, 2, 1, false)
+	ui.pageList.status = tview.NewTextView()
+	ui.pageList.status.SetScrollable(false)
+	ui.pageList.status.SetWrap(false)
+	ui.pageList.flex.AddItem(ui.pageList.status, 2, 1, false)
+
+	// Container for the text and its status bar
+	ui.pageText.flex = tview.NewFlex()
+	ui.pageText.flex.SetDirection(tview.FlexRow)
 
 	// Text field for command output
-	ui.text = tview.NewTextView()
-	ui.text.SetScrollable(true)
-	ui.text.SetWrap(false)
-	ui.textVisible = false
+	ui.pageText.text = tview.NewTextView()
+	ui.pageText.text.SetScrollable(true)
+	ui.pageText.text.SetWrap(false)
+	ui.pageText.flex.AddItem(ui.pageText.text, 0, 1, true)
 
-	ui.app.SetRoot(ui.flex, true)
+	// Status line at the bottom
+	ui.pageText.status = tview.NewTextView()
+	ui.pageText.status.SetScrollable(false)
+	ui.pageText.status.SetWrap(false)
+	ui.pageText.status.SetRegions(true)
+	ui.pageText.flex.AddItem(ui.pageText.status, 1, 1, false)
+
+	ui.app.SetRoot(ui.pageList.flex, true)
 	return ui
 }
 
 func (ui *Ui) fillList(itemList *ItemList, selectedIndex int) {
-	ui.itemList = itemList
+	ui.pageList.itemList = itemList
 
-	for _, item := range ui.itemList.items {
+	for _, item := range ui.pageList.itemList.items {
 		// Build the list
-		ui.list.AddItem(item.display, "", 0, nil)
+		ui.pageList.list.AddItem(item.display, "", 0, nil)
 	}
 
-	if selectedIndex < ui.list.GetItemCount() {
+	if selectedIndex < ui.pageList.list.GetItemCount() {
 		// Set the cursor to the previous line if possible
-		ui.list.SetCurrentItem(selectedIndex)
+		ui.pageList.list.SetCurrentItem(selectedIndex)
 	}
 
 	if config.test {
 		// Used for the tests
 		ui.app.Stop()
-		if config.program != "" && ui.list.GetItemCount() > 0 {
-			output := ui.itemList.Get(0).LaunchProgram()
+		if config.program != "" && ui.pageList.list.GetItemCount() > 0 {
+			_, output := ui.pageList.itemList.Get(0).LaunchProgram()
 			if output != "" {
 				fmt.Println(output)
 			}
@@ -204,7 +230,7 @@ func (ui *Ui) fillList(itemList *ItemList, selectedIndex int) {
 	}
 }
 
-func (ui *Ui) setStatus(programExecuted bool) {
+func (pageList *PageList) setStatus(programExecuted string) {
 	info := "\n"
 	space := "     "
 
@@ -212,37 +238,44 @@ func (ui *Ui) setStatus(programExecuted bool) {
 		info += fmt.Sprintf("%s%s", config.pattern, space)
 	}
 
-	index := ui.list.GetCurrentItem()
-	info += fmt.Sprintf("Line %d of %d", index + 1, ui.list.GetItemCount())
-	if config.program != "" && !programExecuted {
-		info += space + PrintCommand(ui.itemList.Get(index).match)
+	index := pageList.list.GetCurrentItem()
+	info += fmt.Sprintf("Line %d of %d", index + 1, pageList.list.GetItemCount())
+	if config.program != "" && programExecuted == "" {
+		info += space + PrintCommand(pageList.itemList.Get(index).match)
 	}
 
-	ui.status.SetText(info)
+	pageList.status.SetText(info)
 }
 
-func (ui *Ui) setText(programOutput string) {
+func (ui *Ui) setText(programExecuted string, programOutput string) {
 	// Fill the text view with the output of the program
-	ui.text.SetText(programOutput)
-	ui.app.SetRoot(ui.text, true)
-	ui.textVisible = true
+	ui.pageText.text.SetText(programOutput)
+
+	// Set the status bar text
+	status := fmt.Sprintf("[\"0\"]%s[\"\"]", programExecuted)
+	ui.pageText.status.SetText(status)
+	ui.pageText.status.Highlight("0")
+
+	// Display the text together with the status bar
+	ui.app.SetRoot(ui.pageText.flex, true)
+	ui.pageTextVisible = true
 }
 
 // Signature of this function must not be changed
-func (ui *Ui) lineSelected(index int, _ string, _ string, _ rune) {
-	ui.setStatus(false)
+func (pageList *PageList) lineSelected(index int, _ string, _ string, _ rune) {
+	pageList.setStatus("")
 }
 
 // Signature of this function must not be changed
 func (ui *Ui) lineClicked(index int, _ string, _ string, _ rune) {
-	item := ui.itemList.Get(index)
+	item := ui.pageList.itemList.Get(index)
 	if item.match != "" {
 		ui.app.Stop()
 
 		// Run the program and fetch the output if it is not writing to stdout
-		output := item.LaunchProgram()
+		program, output := item.LaunchProgram()
 
 		// Restart the list view
-		run(ui.itemList, index, true, output)
+		run(ui.pageList.itemList, index, program, output)
 	}
 }

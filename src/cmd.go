@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func LaunchProgram(match string) string {
+func LaunchProgram(match string) (string, string) {
 	args := prepareArguments(match)
 	cmd := exec.Command(config.program, args...)
 
@@ -42,7 +42,7 @@ func LaunchProgram(match string) string {
 		}
 	}
 
-	return buffer.String()
+	return PrintCommand(match), buffer.String()
 }
 
 func PrintCommand(match string) string {
