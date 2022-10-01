@@ -46,6 +46,7 @@ func PrintHelp() {
 	fmt.Println("an interactive list. Each line is matched against a regular expression PATTERN. The")
 	fmt.Println("first match in each line is highlighted. When [Enter] is pressed, the given COMMAND")
 	fmt.Println("is executed with the highlighted match of the selected line as additional argument.")
+	fmt.Println("The placeholder `{}` can be used in COMMAND to insert the match at a given position.")
 	fmt.Println("When the COMMAND returns, the list is displayed again.")
 	fmt.Println("\nKey bindings:")
 	fmt.Println("\n   [q] or [Esc]        Quit")
@@ -63,24 +64,30 @@ func PrintHelp() {
 	fmt.Println("                       or")
 	fmt.Println("   git log --oneline | " + os.Args[0] + " --git-commit-hash git show")
 	fmt.Println("                       will display all commits, highlight all commit hashes, and")
-	fmt.Println("                       execute `git show <commit hash>` when [Enter] is pressed.")
+	fmt.Println("                       show the commit details by executing `git show <commit hash>`")
+	fmt.Println("                       when [Enter] is pressed.")
 	fmt.Println("\n   ls -1 | " + os.Args[0] + " \".+\" less")
 	fmt.Println("                       or")
 	fmt.Println("   ls -1 | " + os.Args[0] + " --line less")
-	fmt.Println("                       will display all files in the directory and execute")
-	fmt.Println("                       `less <file name>` when [Enter] is pressed.")
+	fmt.Println("                       will display all files in the directory and show the selected")
+	fmt.Println("                       file with `less <file name>` when [Enter] is pressed.")
+	fmt.Println("\n   ls -1 | " + os.Args[0] + " --line cp {} ..")
+	fmt.Println("                       will display all files in the directory and copy the selected")
+	fmt.Println("                       file to the parent directory by executing `cp <file name> ..`")
+	fmt.Println("                       when [Enter] is pressed.")
 	fmt.Println("\n   grep -r func | ./lisst \"^(.*?):\" vi")
 	fmt.Println("                       or")
 	fmt.Println("   grep -r func | ./lisst --grep-filename vi")
 	fmt.Println("                       will recursively grep for \"func\" in all files, highlight all")
-	fmt.Println("                       file names, and execute `vi <file name>` when [Enter] is")
-	fmt.Println("                       pressed.")
+	fmt.Println("                       file names, and open the text editor `vi <file name>` when")
+	fmt.Println("                       [Enter] is pressed.")
 	fmt.Println("\n   squeue -u $USER | ./lisst --show-output \"^\\s*([0-9]{1,})\\b\" scontrol show job")
 	fmt.Println("                       will query SLURM for all running jobs of the current user,")
-	fmt.Println("                       highlight all job IDs, and execute `scontrol show job <job ID>`")
-	fmt.Println("                       when [Enter] is pressed. Note the additional flag")
-	fmt.Println("                       `--show-output` to display the output of `scontrol` instead")
-	fmt.Println("                       of printing it to the terminal in the background.")
+	fmt.Println("                       highlight all job IDs, and stop the selected job by executing")
+	fmt.Println("                       `scontrol show job <job ID>` when [Enter] is pressed. Note the")
+	fmt.Println("                       additional flag `--show-output` to display the output of")
+	fmt.Println("                       `scontrol` instead of printing it to the terminal in the")
+	fmt.Println("                       background.")
 	fmt.Println("\nEnvironment variable:")
 	fmt.Println("\n   LISST_COLOR         Set this variable to change the color for highlighting, which")
 	fmt.Println("                       defaults to \"red\". Assign \"-\" to disable highlighting.")
@@ -219,7 +226,7 @@ func (ui *Ui) fillList(itemList *ItemList, selectedIndex int) {
 		// Used for the tests
 		ui.app.Stop()
 		if config.program != "" && ui.pageList.list.GetItemCount() > 0 {
-			_, output := ui.pageList.itemList.Get(0).LaunchProgram()
+			_, output := ui.pageList.itemList.Get(0).RunCommand()
 			if output != "" {
 				fmt.Println(output)
 			}
@@ -241,7 +248,7 @@ func (pageList *PageList) setStatus(programExecuted string) {
 	index := pageList.list.GetCurrentItem()
 	info += fmt.Sprintf("Line %d of %d", index + 1, pageList.list.GetItemCount())
 	if config.program != "" && programExecuted == "" {
-		info += space + PrintCommand(pageList.itemList.Get(index).match)
+		info += space + pageList.itemList.Get(index).PrintCommand()
 	}
 
 	pageList.status.SetText(info)
@@ -269,11 +276,11 @@ func (pageList *PageList) lineSelected(index int, _ string, _ string, _ rune) {
 // Signature of this function must not be changed
 func (ui *Ui) lineClicked(index int, _ string, _ string, _ rune) {
 	item := ui.pageList.itemList.Get(index)
-	if item.match != "" {
+	if item.HasMatch() {
 		ui.app.Stop()
 
 		// Run the program and fetch the output if it is not writing to stdout
-		program, output := item.LaunchProgram()
+		program, output := item.RunCommand()
 
 		// Restart the list view
 		run(ui.pageList.itemList, index, program, output)

@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func LaunchProgram(match string) (string, string) {
+func RunCommand(match string) (string, string) {
 	args := prepareArguments(match)
 	cmd := exec.Command(config.program, args...)
 
@@ -54,6 +54,22 @@ func PrintCommand(match string) string {
 }
 
 func prepareArguments(match string) []string {
-	args := config.programArgs
-	return append(args, match)
+	args := make([]string, len(config.programArgs))
+	copy(args, config.programArgs)
+
+	// Replace any {} in argument with the match
+	argInserted := false
+	for i := range args {
+		if strings.Contains(args[i], "{}") {
+			args[i] = strings.ReplaceAll(args[i], "{}", match)
+			argInserted = true
+		}
+	}
+
+	// There was no {}, so just append match
+	if !argInserted {
+		args = append(args, match)
+	}
+
+	return args
 }

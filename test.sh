@@ -103,12 +103,22 @@ function run() {
         echo -e "foo /dir/file.dat" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
+    20)
+        echo -e "test1 test2\ntest3" | ./lisst "test[1-9]" echo {} foobar > test/RESULT_$1
+        echo "test1 foobar" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
+    21)
+        echo -e "test1 test2\ntest3" | ./lisst "test[1-9]" echo foo{}b{}ar > test/RESULT_$1
+        echo "footest1btest1ar" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
     esac
 }
 
 if [ $# -eq 0 ]; then
     result=0
-    for i in {1..19}; do
+    for i in {1..21}; do
         echo "Test $i"
         run $i || { result=1; echo "   FAILED"; }
     done

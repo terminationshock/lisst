@@ -67,10 +67,10 @@ func TestProcessRegexp(t *testing.T) {
 		t.Error("Incorrect processed line with multiple submatches highlighting the first")
 	}
 
-	config.pattern = regexp.MustCompile("m(a(t))(c)(h)")
+	config.pattern = regexp.MustCompile("m(at)(c(h))")
 	items = NewItemList(lines)
 
-	if items.items[0].display != "the matc[red]h[-]" {
+	if items.items[0].display != "the m[red]at[-]ch" {
 		t.Error("Incorrect processed line with many submatches")
 	}
 }

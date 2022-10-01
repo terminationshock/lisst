@@ -34,13 +34,16 @@ func (item *Item) process(line string) {
 	item.display = line
 
 	if config.pattern != nil {
-		tokens := config.pattern.FindAllStringSubmatch(line, 1)
-		if len(tokens) > 0 && len(tokens[0]) > 0 {
+		tokens := config.pattern.FindStringSubmatch(line)
+		if tokens != nil && len(tokens) > 0 {
 			// Highlight first occurrence of regexp in line
-			last := len(tokens[0]) - 1
-			item.match = tokens[0][last]
-			highlighted := strings.Replace(tokens[0][0], item.match, "[" + config.color + "]" + item.match + "[-]", 1)
-			item.display = strings.Replace(item.display, tokens[0][0], highlighted, 1)
+			index := 0
+			if len(tokens) > 1 {
+				index = 1
+			}
+			item.match = tokens[index]
+			highlighted := strings.Replace(tokens[0], item.match, "[" + config.color + "]" + item.match + "[-]", 1)
+			item.display = strings.Replace(item.display, tokens[0], highlighted, 1)
 		}
 	}
 
@@ -48,8 +51,16 @@ func (item *Item) process(line string) {
 	item.display = strings.ReplaceAll(item.display, "\t", strings.Repeat(" ", tabSize))
 }
 
-func (item *Item) LaunchProgram() (string, string) {
-	return LaunchProgram(item.match)
+func (item *Item) HasMatch() bool {
+	return item.match != ""
+}
+
+func (item *Item) PrintCommand() string {
+	return PrintCommand(item.match)
+}
+
+func (item *Item) RunCommand() (string, string) {
+	return RunCommand(item.match)
 }
 
 func (list *ItemList) Get(index int) *Item {
