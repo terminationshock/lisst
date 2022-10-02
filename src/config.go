@@ -51,6 +51,12 @@ func NewConfig() *Config {
 					stat, err := os.Stat(p)
 					return err == nil && !stat.IsDir()
 				}
+			case "--dirname":
+				inputPattern = "[^\\s:]+"
+				config.patternFunc = func(p string) bool {
+					stat, err := os.Stat(p)
+					return err == nil && stat.IsDir()
+				}
 			default:
 				remainingArgs = append(remainingArgs, arg)
 			}

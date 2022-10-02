@@ -58,6 +58,7 @@ func PrintHelp() {
 	fmt.Println("\n   --line              Match the whole line")
 	fmt.Println("   --git-commit-hash   Match a Git commit hash")
 	fmt.Println("   --filename          Match the name of an existing file")
+	fmt.Println("   --dirname           Match the name of an existing directory")
 	fmt.Println("\nOther keyword OPTIONS:")
 	fmt.Println("\n   --show-output       Show the output of COMMAND")
 	fmt.Println("   --help              Display this help")

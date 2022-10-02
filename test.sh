@@ -118,12 +118,17 @@ function run() {
         echo "./test.sh" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
+    23)
+        echo -e "extract the ./ file ./test.sh and not build.sh" | ./lisst --dirname echo > test/RESULT_$1
+        echo "./" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
     esac
 }
 
 if [ $# -eq 0 ]; then
     result=0
-    for i in {1..22}; do
+    for i in {1..23}; do
         echo "Test $i"
         run $i || { result=1; echo "   FAILED"; }
     done
