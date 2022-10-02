@@ -44,12 +44,12 @@ for a complete list of supported keywords and more useful examples.
 
 ## Building
 
-This program requires Go version 1.19 or later for building. You can build the self-contained executable yourself with `./build.sh`
+This program requires Go version 1.19 or later for building. You can build the self-contained executable yourself with `make`
 or you can download the artifact built from the latest commit of the `master` branch [here](https://gitlab.mpcdf.mpg.de/tmelson/lisst/-/jobs/artifacts/master/raw/lisst?job=build).
 
 ## Testing
 
-Unit tests are executed during the build process. The integration test suite can be executed with `./test.sh`.
+You can run all tests (unit and integration tests) with `make check`.
 
 ## License
 

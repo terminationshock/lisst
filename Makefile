@@ -1,20 +1,20 @@
-.PHONY: all build go-get unittest test clean
+.PHONY: go-get check unit-tests integration-tests clean
 
 exe=lisst
 
-all: build unittest test
-
-build: go-get
+$(exe): go-get
 	go build -o $(exe) src/*
 
 go-get:
 	go get github.com/rivo/tview
 	go get github.com/gdamore/tcell/v2
 
-unittest: build
+check: unit-tests integration-tests
+
+unit-tests: $(exe)
 	go test ./...
 
-test: build
+integration-tests: $(exe)
 	./test.sh
 
 clean:
