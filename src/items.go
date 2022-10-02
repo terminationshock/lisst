@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"strings"
@@ -87,6 +88,32 @@ func (item *Item) PrintCommand() string {
 
 func (item *Item) RunCommand() (string, string) {
 	return RunCommand(item.match)
+}
+
+func (list *ItemList) Filter() error {
+	count := 0
+	for _, item := range list.items {
+		if item.HasMatch() {
+			count++
+		}
+	}
+
+	if count == 0 {
+		return errors.New("Empty list")
+	}
+
+	items := make([]Item, count)
+
+	count = 0
+	for _, item := range list.items {
+		if item.HasMatch() {
+			items[count] = item
+			count++
+		}
+	}
+
+	list.items = items
+	return nil
 }
 
 func (list *ItemList) Get(index int) *Item {

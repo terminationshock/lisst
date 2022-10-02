@@ -11,6 +11,7 @@ type Config struct {
 	patternFunc func(string) bool
 	program string
 	programArgs []string
+	filter bool
 	showProgramOutput bool
 	test bool
 }
@@ -23,6 +24,7 @@ func NewConfig() *Config {
 		},
 		program: "",
 		programArgs: []string{},
+		filter: false,
 		showProgramOutput: false,
 		test: false,
 	}
@@ -36,6 +38,8 @@ func NewConfig() *Config {
 			case "--help":
 				PrintHelp()
 				os.Exit(0)
+			case "--filter":
+				config.filter = true
 			case "--show-output":
 				config.showProgramOutput = true
 			case "--line":

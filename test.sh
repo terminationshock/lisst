@@ -127,12 +127,27 @@ function run() {
         echo "this text is [maroon:][::r]red[::-][-:-:-] and [navy:]blue[-:-:-]" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
+    25)
+        echo -e "test1 test2\ntest3\ntest2" | ./lisst --filter test2 > test/RESULT_$1
+        echo -e "test1 [::r]test2[::-]\n[::r]test2[::-]" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
+    26)
+        echo -e "test1 test2\ntest3\ntest2" | ./lisst test2 --filter > test/RESULT_$1
+        echo -e "test1 [::r]test2[::-]\n[::r]test2[::-]" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
+    27)
+        ! echo -e "test1 test2\ntest3\ntest2" | ./lisst --filter no_match 2> test/RESULT_$1
+        echo "All lines filtered out" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
     esac
 }
 
 if [ $# -eq 0 ]; then
     result=0
-    for i in {1..24}; do
+    for i in {1..27}; do
         echo "Test $i"
         run $i || { result=1; echo "   FAILED"; }
     done

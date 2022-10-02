@@ -98,3 +98,28 @@ func TestProcessRegexpWithFunc(t *testing.T) {
 		t.Error("Incorrect processed line with given function")
 	}
 }
+
+func TestFilter(t *testing.T) {
+	list := &ItemList {
+		items: make([]Item, 2),
+	}
+
+	list.items[0] = Item{
+		match: "test",
+	}
+	list.items[1] = Item{
+		match: "",
+	}
+
+	err := list.Filter()
+	if err != nil || len(list.items) != 1 {
+		t.Error("Incorrect filter")
+	}
+
+	list.items[0].match = ""
+
+	err = list.Filter()
+	if err == nil {
+		t.Error("Incorrect filter for empty result")
+	}
+}

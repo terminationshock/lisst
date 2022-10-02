@@ -37,6 +37,14 @@ func main() {
 	input := readFromPipe()
 	itemList := NewItemList(input)
 
+	if config.filter {
+		err := itemList.Filter()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "All lines filtered out")
+			os.Exit(1)
+		}
+	}
+
 	run(itemList, 0, "", "")
 }
 
@@ -61,6 +69,7 @@ func PrintHelp() {
 	fmt.Println("   --dirname           Match the name of an existing directory")
 	fmt.Println("\nOther keyword OPTIONS:")
 	fmt.Println("\n   --show-output       Show the output of COMMAND")
+	fmt.Println("   --filter            Hide lines without a match")
 	fmt.Println("   --help              Display this help")
 	fmt.Println("\nExamples:")
 	fmt.Println("\n   git log --oneline | " + os.Args[0] + " \"\\b[0-9a-z]{7,40}\\b\" git show")
@@ -177,6 +186,9 @@ func initUi() *Ui {
 	ui.pageList.list.ShowSecondaryText(false)
 	ui.pageList.list.SetWrapAround(false)
 	ui.pageList.list.SetHighlightFullLine(true)
+	style := tcell.StyleDefault
+	style = style.Reverse(true)
+	ui.pageList.list.SetSelectedStyle(style)
 	ui.pageList.flex.AddItem(ui.pageList.list, 0, 1, true)
 
 	// Invoked when a line is highlighted
