@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"regexp"
-	"strings"
 )
 
 type Config struct {
@@ -13,7 +12,6 @@ type Config struct {
 	program string
 	programArgs []string
 	showProgramOutput bool
-	color string
 	test bool
 }
 
@@ -26,7 +24,6 @@ func NewConfig() *Config {
 		program: "",
 		programArgs: []string{},
 		showProgramOutput: false,
-		color: "red",
 		test: false,
 	}
 
@@ -88,12 +85,6 @@ func NewConfig() *Config {
 			// Program arguments
 			config.programArgs = remainingArgs[offset+1:]
 		}
-	}
-
-	color := strings.TrimSpace(os.Getenv("LISST_COLOR"))
-	if color != "" {
-		// Highlighting color for matches
-		config.color = color
 	}
 
 	if os.Getenv("LISST_TEST") != "" {

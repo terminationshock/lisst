@@ -33,18 +33,17 @@ function run() {
         ;;
     6)
         echo -e "test1\n  test2\n\n\ttest3\ttest3\n\n" | ./lisst test > test/RESULT_$1
-        echo -e "[red]test[-]1\n  [red]test[-]2\n    [red]test[-]3    test3" > test/EXPECT_$1
+        echo -e "[::r]test[::-]1\n  [::r]test[::-]2\n    [::r]test[::-]3    test3" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     7)
-        export LISST_COLOR=blue
-        echo -e "test1\n  test2\n\n\ttest3\ttest3\n\n" | ./lisst test > test/RESULT_$1
-        echo -e "[blue]test[-]1\n  [blue]test[-]2\n    [blue]test[-]3    test3" > test/EXPECT_$1
-        diff test/RESULT_$1 test/EXPECT_$1 && unset LISST_COLOR
+        echo -e "[test]1\n  [test]2\n\n\ttest3\t[test]3\n\n" | ./lisst test > test/RESULT_$1
+        echo -e "[[::r]test[::-][]1\n  [[::r]test[::-][]2\n    [::r]test[::-]3    [test[]3" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
         ;;
     8)
         echo -e "test1\n  test2\n\n\ttest3\ttest3\n\n" | ./lisst "t(est)" > test/RESULT_$1
-        echo -e "t[red]est[-]1\n  t[red]est[-]2\n    t[red]est[-]3    test3" > test/EXPECT_$1
+        echo -e "t[::r]est[::-]1\n  t[::r]est[::-]2\n    t[::r]est[::-]3    test3" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     9)
@@ -71,17 +70,17 @@ function run() {
         ;;
     13)
         echo -e "test1 test2\ntest3" | ./lisst --line > test/RESULT_$1
-        echo -e "[red]test1 test2[-]\n[red]test3[-]" > test/EXPECT_$1
+        echo -e "[::r]test1 test2[::-]\n[::r]test3[::-]" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     14)
         echo -e "test1234 abcdef1\n0987654321 1234567\n--git-commit-hash" | ./lisst --git-commit-hash > test/RESULT_$1
-        echo -e "test1234 [red]abcdef1[-]\n[red]0987654321[-] 1234567\n--git-commit-hash" > test/EXPECT_$1
+        echo -e "test1234 [::r]abcdef1[::-]\n[::r]0987654321[::-] 1234567\n--git-commit-hash" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     15)
         echo -e "./src/main.go:content\nbuild.sh:42:content" | ./lisst --filename > test/RESULT_$1
-        echo -e "[red]./src/main.go[-]:content\n[red]build.sh[-]:42:content" > test/EXPECT_$1
+        echo -e "[::r]./src/main.go[::-]:content\n[::r]build.sh[::-]:42:content" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     16)
@@ -123,12 +122,17 @@ function run() {
         echo "./" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
+    24)
+        echo -e "this text is \033[0;31mred\033[0m and \033[0;34mblue\033[0m" | ./lisst red > test/RESULT_$1
+        echo "this text is [maroon:][::r]red[::-][-:-:-] and [navy:]blue[-:-:-]" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
     esac
 }
 
 if [ $# -eq 0 ]; then
     result=0
-    for i in {1..23}; do
+    for i in {1..24}; do
         echo "Test $i"
         run $i || { result=1; echo "   FAILED"; }
     done

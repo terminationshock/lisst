@@ -18,7 +18,7 @@ git log --oneline | lisst "[0-9a-f]{7,40}" git show
 ```
 
 This command will pipe the output of `git log` into *lisst*. It will open an interactive list which you can browse with the arrow keys.
-Each commit hash matching the regular expression `[0-9a-f]{7,40}` will be highlighted in red. When you select a line containing a commit hash
+Each commit hash matching the regular expression `[0-9a-f]{7,40}` will be highlighted. When you select a line containing a commit hash
 and hit the enter key, the command `git show <commit hash>` will be executed. When this command returns, the list will be shown again allowing you
 to select the next line of interest.
 
@@ -33,7 +33,7 @@ The following example demonstrates how to efficiently edit many files:
 grep -r func | lisst "^(.*?):" vi
 ```
 
-All occurrences of `func` in all files in the current directory and all sub-directories will be displayed as a list with each file name highlighted in red.
+All occurrences of `func` in all files in the current directory and all sub-directories will be displayed as a list with each file name being highlighted.
 When you select a certain line and press the enter key, the editor `vi` will be launched and you can edit the file as usual. When you close the editor,
 the list will be visible again allowing you to edit the next file.
 

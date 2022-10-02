@@ -91,9 +91,6 @@ func PrintHelp() {
 	fmt.Println("                       Note the additional flag `--show-output` to display the output")
 	fmt.Println("                       of `scontrol` instead of printing it to the terminal in the")
 	fmt.Println("                       background.")
-	fmt.Println("\nEnvironment variable:")
-	fmt.Println("\n   LISST_COLOR         Set this variable to change the color for highlighting, which")
-	fmt.Println("                       defaults to \"red\". Assign \"-\" to disable highlighting.")
 }
 
 func readFromPipe() []string {

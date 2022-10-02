@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
+	"github.com/rivo/tview"
 )
 
 const tabSize = 4
+var reAnsiColorCodes = regexp.MustCompile("\\x1B\\[(([0-9]{1,2})?(;)?([0-9]{1,2})?)?[m,K,H,f,J]")
 
 type ItemList struct {
 	items []Item
@@ -30,11 +33,18 @@ func NewItemList(input []string) *ItemList {
 }
 
 func (item *Item) process(line string) {
-	item.original = line
-	item.display = line
+	// Remove all ANSI color codes
+	item.original = reAnsiColorCodes.ReplaceAllString(line, "")
+
+	// Replace all [foobar] with [foobar[] to not confuse the color display in the list
+	// see https://github.com/rivo/tview/blob/master/doc.go
+	item.display = tview.Escape(line)
+
+	// Replace all ANSI color codes with the corresponding color tags
+	item.display = tview.TranslateANSI(item.display)
 
 	if config.pattern != nil {
-		tokens := config.pattern.FindAllStringSubmatch(line, -1)
+		tokens := config.pattern.FindAllStringSubmatch(item.original, -1)
 		if tokens != nil {
 			for _, matches := range tokens {
 				// Highlight the first match only
@@ -60,7 +70,7 @@ func (item *Item) highlightFirstMatch(matches []string) bool {
 	// Check the match using the pattern function and highlight it if the result is true
 	if config.patternFunc == nil || config.patternFunc(match) {
 		item.match = match
-		highlighted := strings.Replace(matches[0], item.match, "[" + config.color + "]" + item.match + "[-]", 1)
+		highlighted := strings.Replace(matches[0], item.match, "[::r]" + item.match + "[::-]", 1)
 		item.display = strings.Replace(item.display, matches[0], highlighted, 1)
 		return true
 	}
