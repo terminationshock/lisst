@@ -9,6 +9,7 @@ import (
 
 type Config struct {
 	pattern *regexp.Regexp
+	patternFunc func(string) bool
 	program string
 	programArgs []string
 	showProgramOutput bool
@@ -19,6 +20,9 @@ type Config struct {
 func NewConfig() *Config {
 	config = &Config {
 		pattern: nil,
+		patternFunc: func(_ string) bool {
+			return true
+		},
 		program: "",
 		programArgs: []string{},
 		showProgramOutput: false,
@@ -39,10 +43,14 @@ func NewConfig() *Config {
 				config.showProgramOutput = true
 			case "--line":
 				inputPattern = "^.*$"
-			case "--grep-filename":
-				inputPattern = "^(.*?):"
 			case "--git-commit-hash":
 				inputPattern = "\\b[0-9a-f]{7,40}\\b"
+			case "--filename":
+				inputPattern = "[^\\s:]+"
+				config.patternFunc = func(p string) bool {
+					stat, err := os.Stat(p)
+					return err == nil && !stat.IsDir()
+				}
 			default:
 				remainingArgs = append(remainingArgs, arg)
 			}

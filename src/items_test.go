@@ -74,3 +74,29 @@ func TestProcessRegexp(t *testing.T) {
 		t.Error("Incorrect processed line with many submatches")
 	}
 }
+
+func TestProcessRegexpWithFunc(t *testing.T) {
+	lines := []string{"the match MATCH"}
+
+	config = &Config{}
+	config.pattern = regexp.MustCompile("\\S*")
+	config.color = "red"
+
+	config.patternFunc = func(p string) bool {
+		return len(p) == 5
+	}
+	items := NewItemList(lines)
+
+	if items.items[0].display != "the [red]match[-] MATCH" {
+		t.Error("Incorrect processed line with given function")
+	}
+
+	config.patternFunc = func(_ string) bool {
+		return false
+	}
+	items = NewItemList(lines)
+
+	if items.items[0].display != "the match MATCH" {
+		t.Error("Incorrect processed line with given function")
+	}
+}

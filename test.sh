@@ -80,13 +80,13 @@ function run() {
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     15)
-        echo -e "/dir/file.dat:content\n/another/dir/file.txt:42:content" | ./lisst --grep-filename > test/RESULT_$1
-        echo -e "[red]/dir/file.dat[-]:content\n[red]/another/dir/file.txt[-]:42:content" > test/EXPECT_$1
+        echo -e "./src/main.go:content\nbuild.sh:42:content" | ./lisst --filename > test/RESULT_$1
+        echo -e "[red]./src/main.go[-]:content\n[red]build.sh[-]:42:content" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     16)
-        echo -e "/dir/file.dat:content\n/another/dir/file.txt:42:content" | ./lisst --grep-filename echo > test/RESULT_$1
-        echo -e "/dir/file.dat" > test/EXPECT_$1
+        echo -e "./src/main.go:content\nbuild.sh:42:content" | ./lisst --filename echo > test/RESULT_$1
+        echo -e "./src/main.go" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     17)
@@ -94,13 +94,13 @@ function run() {
         grep -q "file not found" test/RESULT_$1
         ;;
     18)
-        echo -e "/dir/file.dat:content\n/another/dir/file.txt:42:content" | ./lisst --show-output --grep-filename echo -n foo > test/RESULT_$1
-        echo -e "foo /dir/file.dat" > test/EXPECT_$1
+        echo -e "./src/main.go:content\nbuild.sh:42:content" | ./lisst --show-output --filename echo -n foo > test/RESULT_$1
+        echo -e "foo ./src/main.go" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     19)
-        echo -e "/dir/file.dat:content\n/another/dir/file.txt:42:content" | ./lisst --grep-filename --show-output echo -n foo > test/RESULT_$1
-        echo -e "foo /dir/file.dat" > test/EXPECT_$1
+        echo -e "./src/main.go:content\nbuild.sh:42:content" | ./lisst --filename --show-output echo -n foo > test/RESULT_$1
+        echo -e "foo ./src/main.go" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     20)
@@ -113,12 +113,17 @@ function run() {
         echo "footest1btest1ar" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
+    22)
+        echo -e "extract the ./ file ./test.sh and not build.sh" | ./lisst --filename echo > test/RESULT_$1
+        echo "./test.sh" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
     esac
 }
 
 if [ $# -eq 0 ]; then
     result=0
-    for i in {1..21}; do
+    for i in {1..22}; do
         echo "Test $i"
         run $i || { result=1; echo "   FAILED"; }
     done

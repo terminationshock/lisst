@@ -34,21 +34,37 @@ func (item *Item) process(line string) {
 	item.display = line
 
 	if config.pattern != nil {
-		tokens := config.pattern.FindStringSubmatch(line)
-		if tokens != nil && len(tokens) > 0 {
-			// Highlight first occurrence of regexp in line
-			index := 0
-			if len(tokens) > 1 {
-				index = 1
+		tokens := config.pattern.FindAllStringSubmatch(line, -1)
+		if tokens != nil {
+			for _, matches := range tokens {
+				// Highlight the first match only
+				if item.highlightFirstMatch(matches) {
+					break
+				}
 			}
-			item.match = tokens[index]
-			highlighted := strings.Replace(tokens[0], item.match, "[" + config.color + "]" + item.match + "[-]", 1)
-			item.display = strings.Replace(item.display, tokens[0], highlighted, 1)
 		}
 	}
 
 	// Replace tab characters
 	item.display = strings.ReplaceAll(item.display, "\t", strings.Repeat(" ", tabSize))
+}
+
+func (item *Item) highlightFirstMatch(matches []string) bool {
+	// If there is any submatch, highlight the first submatch, otherwise highlight the entire match
+	index := 0
+	if len(matches) > 1 {
+		index = 1
+	}
+	match := matches[index]
+
+	// Check the match using the pattern function and highlight it if the result is true
+	if config.patternFunc == nil || config.patternFunc(match) {
+		item.match = match
+		highlighted := strings.Replace(matches[0], item.match, "[" + config.color + "]" + item.match + "[-]", 1)
+		item.display = strings.Replace(item.display, matches[0], highlighted, 1)
+		return true
+	}
+	return false
 }
 
 func (item *Item) HasMatch() bool {
