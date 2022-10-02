@@ -79,12 +79,12 @@ function run() {
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     15)
-        echo -e "./src/main.go:content\nbuild.sh:42:content" | ./lisst --filename > test/RESULT_$1
-        echo -e "[::r]./src/main.go[::-]:content\n[::r]build.sh[::-]:42:content" > test/EXPECT_$1
+        echo -e "./src/main.go:content\nMakefile:42:content" | ./lisst --filename > test/RESULT_$1
+        echo -e "[::r]./src/main.go[::-]:content\n[::r]Makefile[::-]:42:content" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     16)
-        echo -e "./src/main.go:content\nbuild.sh:42:content" | ./lisst --filename echo > test/RESULT_$1
+        echo -e "./src/main.go:content\nMakefile:42:content" | ./lisst --filename echo > test/RESULT_$1
         echo -e "./src/main.go" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
@@ -93,12 +93,12 @@ function run() {
         grep -q "file not found" test/RESULT_$1
         ;;
     18)
-        echo -e "./src/main.go:content\nbuild.sh:42:content" | ./lisst --show-output --filename echo -n foo > test/RESULT_$1
+        echo -e "./src/main.go:content\nMakefile:42:content" | ./lisst --show-output --filename echo -n foo > test/RESULT_$1
         echo -e "foo ./src/main.go" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     19)
-        echo -e "./src/main.go:content\nbuild.sh:42:content" | ./lisst --filename --show-output echo -n foo > test/RESULT_$1
+        echo -e "./src/main.go:content\nMakefile:42:content" | ./lisst --filename --show-output echo -n foo > test/RESULT_$1
         echo -e "foo ./src/main.go" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
@@ -113,12 +113,12 @@ function run() {
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     22)
-        echo -e "extract the ./ file ./test.sh and not build.sh" | ./lisst --filename echo > test/RESULT_$1
+        echo -e "extract the ./ file ./test.sh and not Makefile" | ./lisst --filename echo > test/RESULT_$1
         echo "./test.sh" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     23)
-        echo -e "extract the ./ file ./test.sh and not build.sh" | ./lisst --dirname echo > test/RESULT_$1
+        echo -e "extract the ./ file ./test.sh and not Makefile" | ./lisst --dirname echo > test/RESULT_$1
         echo "./" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;

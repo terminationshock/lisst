@@ -12,7 +12,7 @@ before_script:
 build:
   stage: build
   script:
-    - go build -o lisst src/*
+    - make build
     - echo help | ./lisst --help > lisst-help.txt
   artifacts:
     paths:
@@ -22,9 +22,9 @@ build:
 unit_tests:
   stage: test
   script:
-    - go test ./...
+    - make unittest
 
 integration_tests:
   stage: test
   script:
-    - ./test.sh
+    - make test
