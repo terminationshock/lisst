@@ -51,7 +51,9 @@ func PrintHelp() {
 	fmt.Println("\nKey bindings:")
 	fmt.Println("\n   [q] or [Esc]        Quit")
 	fmt.Println("   [Up] and [Down]     Browse lines")
-	fmt.Println("   [Enter]             Execute COMMAND with PATTERN match as argument")
+	fmt.Println("   [n]                 Jump to the next line with a match")
+	fmt.Println("   [N]                 Jump to the previous line with a match")
+	fmt.Println("   [Enter]             Execute COMMAND with the PATTERN match as argument")
 	fmt.Println("\nKeywords to replace PATTERN:")
 	fmt.Println("\n   --line              Match the whole line")
 	fmt.Println("   --git-commit-hash   Match a Git commit hash")
@@ -83,10 +85,10 @@ func PrintHelp() {
 	fmt.Println("                       [Enter] is pressed.")
 	fmt.Println("\n   squeue -u $USER | ./lisst --show-output \"^\\s*([0-9]{1,})\\b\" scontrol show job")
 	fmt.Println("                       will query SLURM for all running jobs of the current user,")
-	fmt.Println("                       highlight all job IDs, and stop the selected job by executing")
-	fmt.Println("                       `scontrol show job <job ID>` when [Enter] is pressed. Note the")
-	fmt.Println("                       additional flag `--show-output` to display the output of")
-	fmt.Println("                       `scontrol` instead of printing it to the terminal in the")
+	fmt.Println("                       highlight all job IDs, and show details of the selected job by")
+	fmt.Println("                       executing `scontrol show job <job ID>` when [Enter] is pressed.")
+	fmt.Println("                       Note the additional flag `--show-output` to display the output")
+	fmt.Println("                       of `scontrol` instead of printing it to the terminal in the")
 	fmt.Println("                       background.")
 	fmt.Println("\nEnvironment variable:")
 	fmt.Println("\n   LISST_COLOR         Set this variable to change the color for highlighting, which")
@@ -159,6 +161,10 @@ func initUi() *Ui {
 				ui.app.Stop()
 				os.Exit(0)
 			}
+		} else if event.Rune() == 'n' && !ui.pageTextVisible {
+			ui.pageList.jumpToMatch(true)
+		} else if event.Rune() == 'N' && !ui.pageTextVisible {
+			ui.pageList.jumpToMatch(false)
 		}
 		return event
 	})
@@ -252,6 +258,34 @@ func (pageList *PageList) setStatus(programExecuted string) {
 	}
 
 	pageList.status.SetText(info)
+}
+
+func (pageList *PageList) jumpToMatch(forward bool) {
+	count := pageList.list.GetItemCount()
+	if count < 2 {
+		return
+	}
+
+	index := pageList.list.GetCurrentItem()
+
+	if forward && index < count - 1 {
+		for i := index + 1; i < count; i++ {
+			if pageList.itemList.Get(i).HasMatch() {
+				index = i
+				break
+			}
+		}
+	} else if !forward && index > 0 {
+		for i := index - 1; i >= 0; i-- {
+			if pageList.itemList.Get(i).HasMatch() {
+				index = i
+				break
+			}
+		}
+	}
+
+	pageList.list.SetCurrentItem(index)
+	pageList.setStatus("")
 }
 
 func (ui *Ui) setText(programExecuted string, programOutput string) {
