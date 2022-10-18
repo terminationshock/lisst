@@ -74,6 +74,31 @@ func TestProcessRegexp(t *testing.T) {
 	}
 }
 
+func TestProcessRegexpWithColors(t *testing.T) {
+	lines := []string{"\033[32mfirst\033[0m match", "\033[32msecond match\033[0m",
+		"\033[32msecond ma\033[0mtch", "second ma\033[32mtch\033[0m", "second ma\033[32mtc\033[0mh"}
+
+	config = &Config{}
+	config.pattern = regexp.MustCompile("m[a-c]tch")
+	items := NewItemList(lines)
+
+	if items.items[0].display != "[green:]first[-:-:] [::r]match[::-]" {
+		t.Error("Incorrect processed colored line outside of colored region")
+	}
+	if items.items[1].display != "[green:]second [::r]match[::-][-:-:]" {
+		t.Error("Incorrect processed colored line inside colored region")
+	}
+	if items.items[2].display != "[green:]second [::r]ma[-:-:]tch[::-]" {
+		t.Error("Incorrect processed colored line intersecting with colored region")
+	}
+	if items.items[3].display != "second [::r]ma[green:]tch[::-][-:-:]" {
+		t.Error("Incorrect processed colored line intersecting with colored region")
+	}
+	if items.items[4].display != "second [::r]ma[green:]tc[-:-:]h[::-]" {
+		t.Error("Incorrect processed colored line intersecting with colored region")
+	}
+}
+
 func TestProcessRegexpWithFunc(t *testing.T) {
 	lines := []string{"the match MATCH"}
 

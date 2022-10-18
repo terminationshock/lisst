@@ -42,7 +42,7 @@ func (item *Item) process(line string) {
 	item.display = tview.Escape(line)
 
 	// Replace all ANSI color codes with the corresponding color tags
-	item.display = tview.TranslateANSI(item.display)
+	item.display = strings.ReplaceAll(tview.TranslateANSI(item.display), "[-:-:-]", "[-:-:]")
 
 	if config.pattern != nil {
 		tokens := config.pattern.FindAllStringSubmatch(item.original, -1)
@@ -72,7 +72,12 @@ func (item *Item) highlightFirstMatch(matches []string) bool {
 	if config.patternFunc == nil || config.patternFunc(match) {
 		item.match = match
 		highlighted := strings.Replace(matches[0], item.match, "[::r]" + item.match + "[::-]", 1)
-		item.display = strings.Replace(item.display, matches[0], highlighted, 1)
+		if strings.Contains(item.display, matches[0]) {
+			item.display = strings.Replace(item.display, matches[0], highlighted, 1)
+		} else {
+			// Special case where the color ranges intersect
+			item.display = mergeStrings(item.display, strings.Replace(item.original, matches[0], highlighted, 1))
+		}
 		return true
 	}
 	return false
@@ -124,4 +129,44 @@ func (list *ItemList) Print() {
 	for _, item := range list.items {
 		fmt.Println(item.display)
 	}
+}
+
+func mergeStrings(string1 string, string2 string) string {
+	runes1 := []rune(string1)
+	runes2 := []rune(string2)
+	result := []rune{}
+
+	index1 := 0
+	index2 := 0
+	colorTag := false
+	for {
+		if index1 >= len(runes1) && index2 < len(runes2) {
+			result = append(result, runes2[index2:]...)
+			break
+		} else if index2 >= len(runes2) {
+			result = append(result, runes1[index1:]...)
+			break
+		}
+
+		if runes1[index1] == runes2[index2] && runes1[index1] != '[' {
+			result = append(result, runes1[index1])
+			index1++
+			index2++
+		} else if runes2[index2] == '[' {
+			result = append(result, runes2[index2])
+			colorTag = true
+			index2++
+		} else if colorTag {
+			result = append(result, runes2[index2])
+			if runes2[index2] == ']' {
+				colorTag = false
+			}
+			index2++
+		} else {
+			result = append(result, runes1[index1])
+			index1++
+		}
+	}
+
+	return string(result)
 }

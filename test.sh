@@ -124,7 +124,7 @@ function run() {
         ;;
     24)
         echo -e "this text is \033[0;31mred\033[0m and \033[0;34mblue\033[0m" | ./lisst red > test/RESULT_$1
-        echo "this text is [maroon:][::r]red[::-][-:-:-] and [navy:]blue[-:-:-]" > test/EXPECT_$1
+        echo "this text is [maroon:][::r]red[::-][-:-:] and [navy:]blue[-:-:]" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     25)
