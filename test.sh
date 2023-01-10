@@ -142,12 +142,17 @@ function run() {
         echo "All lines filtered out" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
+    28)
+        echo -e "./src/main.go:content:2\nMakefile:42:content\nMakefile:1:2:3" | ./lisst --filename-lineno > test/RESULT_$1
+        echo -e "./src/main.go:content:2\n[::r]Makefile:42[::-]:content\n[::r]Makefile:1[::-]:2:3" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
     esac
 }
 
 if [ $# -eq 0 ]; then
     result=0
-    for i in {1..27}; do
+    for i in {1..28}; do
         echo "Test $i"
         run $i || { result=1; echo "   FAILED"; }
     done

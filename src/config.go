@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strings"
 )
 
 type Config struct {
@@ -50,6 +51,17 @@ func NewConfig() *Config {
 				inputPattern = "[^\\s:]+"
 				config.patternFunc = func(p string) bool {
 					stat, err := os.Stat(p)
+					return err == nil && !stat.IsDir()
+				}
+			case "--filename-lineno":
+				inputPattern = "[^\\s:]+:[1-9][0-9]*"
+				config.patternFunc = func(p string) bool {
+					splitted := strings.Split(p, ":")
+					if len(splitted) == 0 {
+						return false
+					}
+					filename := strings.Join(splitted[:len(splitted) - 1], ":")
+					stat, err := os.Stat(filename)
 					return err == nil && !stat.IsDir()
 				}
 			case "--dirname":
