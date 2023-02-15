@@ -1,5 +1,4 @@
-[![pipeline status](https://gitlab.mpcdf.mpg.de/tmelson/lisst/badges/master/pipeline.svg)](https://gitlab.mpcdf.mpg.de/tmelson/lisst/-/pipelines)
-[![download](https://img.shields.io/badge/download-executable-success)](https://gitlab.mpcdf.mpg.de/tmelson/lisst/-/jobs/artifacts/master/raw/lisst?job=build)
+[![pipeline status](https://github.com/terminationshock/lisst/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/terminationshock/lisst/actions/workflows/build_and_test.yml)
 [![license](https://img.shields.io/badge/license-MIT-informational)](LICENSE)
 [![Go](https://img.shields.io/badge/Go-1.19-informational)](https://go.dev/dl/)
 
@@ -39,13 +38,12 @@ the list will be visible again allowing you to edit the next file.
 
 You can use human-readable keywords for frequently used patterns. In the screencast shown above, for example,
 the keyword `--git-commit-hash` is used for convenience instead of the actual regular expression.
-See [`lisst --help`](https://gitlab.mpcdf.mpg.de/tmelson/lisst/-/jobs/artifacts/master/raw/lisst-help.txt?job=build)
-for a complete list of supported keywords and more useful examples.
+See `lisst --help` for a complete list of supported keywords and more useful examples.
 
 ## Building
 
 This program requires Go version 1.19 or later for building. You can build the self-contained executable yourself with `make`
-or you can download the artifact built from the latest commit of the `master` branch [here](https://gitlab.mpcdf.mpg.de/tmelson/lisst/-/jobs/artifacts/master/raw/lisst?job=build).
+or you can download the artifact built from the latest release [here](https://github.com/terminationshock/lisst/releases/latest).
 
 ## Testing
 
