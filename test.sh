@@ -98,8 +98,10 @@ function run() {
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     19)
-        echo -e "./src/main.go:content\nMakefile:42:content" | ./lisst --filename --show-output echo -n foo > test/RESULT_$1
-        echo -e "foo ./src/main.go" > test/EXPECT_$1
+        echo -e "#!/bin/bash\necho \"\$@\";echo -n \"\$@\" 1>&2" > test/SCRIPT_$1
+        chmod +x test/SCRIPT_$1
+        echo -e "./src/main.go:content\nMakefile:42:content" | ./lisst --filename --show-output test/SCRIPT_$1 > test/RESULT_$1
+        echo -e "./src/main.go\n./src/main.go" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
     20)

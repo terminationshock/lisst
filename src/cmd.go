@@ -24,10 +24,11 @@ func RunCommand(match string) (string, string) {
 	var buffer bytes.Buffer
 	if config.showProgramOutput {
 		cmd.Stdout = &buffer
+		cmd.Stderr = &buffer
 	} else {
 		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
 	}
-	cmd.Stderr = os.Stderr
 
 	err = cmd.Run()
 

@@ -70,7 +70,7 @@ func PrintHelp() {
 	fmt.Println("                       separated by a colon")
 	fmt.Println("   --dirname           Match the name of an existing directory")
 	fmt.Println("\nOther keyword OPTIONS:")
-	fmt.Println("\n   --show-output       Show the output of COMMAND")
+	fmt.Println("\n   --show-output       Show the output (both stdout and stderr) of COMMAND")
 	fmt.Println("   --filter            Hide lines without a match")
 	fmt.Println("   --help              Display this help")
 	fmt.Println("\nExamples:")
