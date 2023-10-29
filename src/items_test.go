@@ -148,3 +148,25 @@ func TestFilter(t *testing.T) {
 		t.Error("Incorrect filter for empty result")
 	}
 }
+
+func TestSort(t *testing.T) {
+	list := &ItemList {
+		items: make([]Item, 3),
+	}
+
+	list.items[0] = Item{
+		match: "test1",
+	}
+	list.items[1] = Item{
+		match: "",
+	}
+	list.items[2] = Item{
+		match: "test2",
+	}
+
+	list.Sort()
+
+	if list.items[0].match != "test1" || list.items[1].match != "test2" || list.items[2].match != "" {
+		t.Error("Incorrect order after sorting")
+	}
+}

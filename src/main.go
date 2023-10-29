@@ -45,6 +45,10 @@ func main() {
 		}
 	}
 
+	if config.sort {
+		itemList.Sort()
+	}
+
 	run(itemList, 0, "", "")
 }
 
@@ -72,6 +76,7 @@ func PrintHelp() {
 	fmt.Println("\nOther keyword OPTIONS:")
 	fmt.Println("\n   --show-output       Show the output (both stdout and stderr) of COMMAND")
 	fmt.Println("   --filter            Hide lines without a match")
+	fmt.Println("   --sort              Sort all lines by their matches")
 	fmt.Println("   --help              Display this help")
 	fmt.Println("\nExamples:")
 	fmt.Println("\n   git log --oneline | " + os.Args[0] + " \"\\b[0-9a-z]{7,40}\\b\" git show")

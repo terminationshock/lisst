@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 	"github.com/rivo/tview"
 )
@@ -119,6 +120,19 @@ func (list *ItemList) Filter() error {
 
 	list.items = items
 	return nil
+}
+
+func (list *ItemList) Sort() {
+	sort.SliceStable(list.items, func(i int, j int) bool {
+		if list.items[i].HasMatch() && list.items[j].HasMatch() {
+			return list.items[i].match < list.items[j].match
+		} else if list.items[i].HasMatch() {
+			return true
+		} else if list.items[j].HasMatch() {
+			return false
+		}
+		return false
+	})
 }
 
 func (list *ItemList) Get(index int) *Item {
