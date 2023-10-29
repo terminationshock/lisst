@@ -96,13 +96,18 @@ func (item *Item) RunCommand() (string, string) {
 	return RunCommand(item.match)
 }
 
-func (list *ItemList) Filter() error {
+func (list *ItemList) NumMatches() int {
 	count := 0
 	for _, item := range list.items {
 		if item.HasMatch() {
 			count++
 		}
 	}
+	return count
+}
+
+func (list *ItemList) Filter() error {
+	count := list.NumMatches()
 
 	if count == 0 {
 		return errors.New("Empty list")
@@ -136,7 +141,7 @@ func (list *ItemList) Sort() {
 }
 
 func (list *ItemList) Get(index int) *Item {
-    return &list.items[index]
+	return &list.items[index]
 }
 
 func (list *ItemList) Print() {

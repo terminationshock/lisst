@@ -24,6 +24,9 @@ func TestProcessNoRegexp(t *testing.T) {
 	if items.items[0].match != "" || items.items[1].match != "" {
 		t.Error("Incorrect matches")
 	}
+	if items.NumMatches() != 0 {
+		t.Error("Incorrect number of matches")
+	}
 }
 
 func TestProcessRegexp(t *testing.T) {
@@ -42,6 +45,9 @@ func TestProcessRegexp(t *testing.T) {
 	if items.items[2].display != "the [::r]match[::-], the mbtch, the mctch" {
 		t.Error("Incorrect processed line with multiple submatches highlighting the first")
 	}
+	if items.NumMatches() != 3 {
+		t.Error("Incorrect number of matches")
+	}
 
 	config.pattern = regexp.MustCompile("m[a-c]tch")
 	items = NewItemList(lines)
@@ -51,6 +57,9 @@ func TestProcessRegexp(t *testing.T) {
 	}
 	if items.items[1].display != "no [::r]match[::-], but the match here and not the match again" {
 		t.Error("Incorrect processed line with multiple matches highlighting the first")
+	}
+	if items.NumMatches() != 3 {
+		t.Error("Incorrect number of matches")
 	}
 
 	config.pattern = regexp.MustCompile("m[b-c]t(c)h")
@@ -64,6 +73,9 @@ func TestProcessRegexp(t *testing.T) {
 	}
 	if items.items[2].display != "the match, the mbt[::r]c[::-]h, the mctch" {
 		t.Error("Incorrect processed line with multiple submatches highlighting the first")
+	}
+	if items.NumMatches() != 1 {
+		t.Error("Incorrect number of matches")
 	}
 
 	config.pattern = regexp.MustCompile("m(at)(c(h))")
