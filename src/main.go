@@ -277,7 +277,7 @@ func (pageList *PageList) setStatus(programExecuted string) {
 
 	index := pageList.list.GetCurrentItem()
 	info += fmt.Sprintf("Line %d of %d", index + 1, pageList.list.GetItemCount())
-	if config.program != "" && programExecuted == "" {
+	if config.program != "" && programExecuted == "" && pageList.itemList.Get(index).HasMatch() {
 		info += space + pageList.itemList.Get(index).PrintCommand()
 	}
 
