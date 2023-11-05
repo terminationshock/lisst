@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"github.com/rivo/tview"
 )
@@ -130,10 +131,20 @@ func (list *ItemList) Filter() error {
 func (list *ItemList) Sort(order int) {
 	sort.SliceStable(list.items, func(i int, j int) bool {
 		if list.items[i].HasMatch() && list.items[j].HasMatch() {
-			if order > 0 {
-				return list.items[i].match < list.items[j].match
+			iVal, iErr := strconv.ParseFloat(list.items[i].match, 64)
+			jVal, jErr := strconv.ParseFloat(list.items[j].match, 64)
+			if iErr == nil && jErr == nil {
+				if order > 0 {
+					return iVal < jVal
+				} else {
+					return iVal > jVal
+				}
 			} else {
-				return list.items[i].match > list.items[j].match
+				if order > 0 {
+					return list.items[i].match < list.items[j].match
+				} else {
+					return list.items[i].match > list.items[j].match
+				}
 			}
 		} else if list.items[i].HasMatch() {
 			return true
