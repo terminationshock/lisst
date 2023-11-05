@@ -164,12 +164,17 @@ function run() {
         echo -e "[::r]3.14[::-]\n[::r]70.1[::-]\n[::r]200[::-]" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
+    32)
+        echo -e "foobar\n" | ./lisst --foobar 2> test/RESULT_$1
+        echo "Invalid command-line option --foobar" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
     esac
 }
 
 if [ $# -eq 0 ]; then
     result=0
-    for i in {1..31}; do
+    for i in {1..32}; do
         echo "Test $i"
         run $i || { result=1; echo "   FAILED"; }
     done

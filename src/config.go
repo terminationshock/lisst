@@ -77,6 +77,10 @@ func NewConfig() *Config {
 					return err == nil && stat.IsDir()
 				}
 			default:
+				if strings.HasPrefix(arg, "--") {
+					fmt.Fprintln(os.Stderr, "Invalid command-line option " + arg)
+					os.Exit(1)
+				}
 				remainingArgs = append(remainingArgs, arg)
 			}
 		}
