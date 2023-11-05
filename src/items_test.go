@@ -176,9 +176,15 @@ func TestSort(t *testing.T) {
 		match: "test2",
 	}
 
-	list.Sort()
+	list.Sort(1)
 
 	if list.items[0].match != "test1" || list.items[1].match != "test2" || list.items[2].match != "" {
+		t.Error("Incorrect order after sorting")
+	}
+
+	list.Sort(-1)
+
+	if list.items[0].match != "test2" || list.items[1].match != "test1" || list.items[2].match != "" {
 		t.Error("Incorrect order after sorting")
 	}
 }

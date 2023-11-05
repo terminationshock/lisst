@@ -127,10 +127,14 @@ func (list *ItemList) Filter() error {
 	return nil
 }
 
-func (list *ItemList) Sort() {
+func (list *ItemList) Sort(order int) {
 	sort.SliceStable(list.items, func(i int, j int) bool {
 		if list.items[i].HasMatch() && list.items[j].HasMatch() {
-			return list.items[i].match < list.items[j].match
+			if order > 0 {
+				return list.items[i].match < list.items[j].match
+			} else {
+				return list.items[i].match > list.items[j].match
+			}
 		} else if list.items[i].HasMatch() {
 			return true
 		} else if list.items[j].HasMatch() {

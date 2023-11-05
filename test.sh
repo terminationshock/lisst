@@ -154,12 +154,17 @@ function run() {
         echo -e "[::r]test1[::-]1\n[::r]test2[::-]\n[::r]test3[::-]\nfoobar2\nfoobar1" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
+    30)
+        echo -e "test3\ntest11\nfoobar2\ntest2\nfoobar1\n" | ./lisst --sort-rev "test[0-9]" > test/RESULT_$1
+        echo -e "[::r]test3[::-]\n[::r]test2[::-]\n[::r]test1[::-]1\nfoobar2\nfoobar1" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
     esac
 }
 
 if [ $# -eq 0 ]; then
     result=0
-    for i in {1..29}; do
+    for i in {1..30}; do
         echo "Test $i"
         run $i || { result=1; echo "   FAILED"; }
     done

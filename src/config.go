@@ -13,7 +13,7 @@ type Config struct {
 	program string
 	programArgs []string
 	filter bool
-	sort bool
+	sort int
 	showProgramOutput bool
 	test bool
 }
@@ -27,7 +27,7 @@ func NewConfig() *Config {
 		program: "",
 		programArgs: []string{},
 		filter: false,
-		sort: false,
+		sort: 0,
 		showProgramOutput: false,
 		test: false,
 	}
@@ -44,7 +44,9 @@ func NewConfig() *Config {
 			case "--filter":
 				config.filter = true
 			case "--sort":
-				config.sort = true
+				config.sort = 1
+			case "--sort-rev":
+				config.sort = -1
 			case "--show-output":
 				config.showProgramOutput = true
 			case "--line":
