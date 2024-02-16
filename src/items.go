@@ -12,6 +12,7 @@ import (
 
 const tabSize = 4
 var reAnsiColorCodes = regexp.MustCompile("\\x1B\\[(([0-9]{1,2})?(;)?([0-9]{1,2})?)?[m,K,H,f,J]")
+var reColorTag = regexp.MustCompile("\\[[a-z-]+:[a-z:-]*\\]")
 
 type ItemList struct {
 	items []Item
@@ -75,7 +76,7 @@ func (item *Item) highlightFirstMatch(matches []string) bool {
 		item.match = match
 		highlighted := strings.Replace(matches[0], item.match, "[::-][::r]" + item.match + "[::-]", 1)
 		if strings.Contains(item.display, matches[0]) {
-			item.display = strings.Replace(item.display, matches[0], highlighted, 1)
+			item.display = replaceFirst(item.display, matches[0], highlighted)
 		} else {
 			// Special case where the color ranges intersect
 			item.display = mergeStrings(item.display, strings.Replace(item.original, matches[0], highlighted, 1))
@@ -203,4 +204,19 @@ func mergeStrings(string1 string, string2 string) string {
 	}
 
 	return string(result)
+}
+
+func replaceFirst(s string, old string, new string) string {
+	var b strings.Builder
+	b.Grow(len(s) + len(new) - len(old))
+
+	i := strings.Index(reColorTag.ReplaceAllStringFunc(s, maskString), old)
+	b.WriteString(s[:i])
+	b.WriteString(new)
+	b.WriteString(s[i + len(old):])
+	return b.String()
+}
+
+func maskString(s string) string {
+	return strings.Repeat(" ", len(s))
 }

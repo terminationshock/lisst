@@ -111,6 +111,21 @@ func TestProcessRegexpWithColors(t *testing.T) {
 	}
 }
 
+func TestProcessRegexpWithMatchInColor(t *testing.T) {
+	lines := []string{"\033[32mgreen\033[0m green", "green \033[32mgreen\033[0m"}
+
+	config = &Config{}
+	config.pattern = regexp.MustCompile("e")
+	items := NewItemList(lines)
+
+	if items.items[0].display != "[green:]gr[::-][::r]e[::-]en[-:-:] green" {
+		t.Error("Incorrect processed colored line with match in color tag")
+	}
+	if items.items[1].display != "gr[::-][::r]e[::-]en [green:]green[-:-:]" {
+		t.Error("Incorrect processed colored line with match in color tag")
+	}
+}
+
 func TestProcessRegexpWithFunc(t *testing.T) {
 	lines := []string{"the match MATCH"}
 
