@@ -36,13 +36,13 @@ func TestProcessRegexp(t *testing.T) {
 	config.pattern = regexp.MustCompile("the (m[a-c]tch)")
 	items := NewItemList(lines)
 
-	if items.items[0].display != "the [::r]match[::-]" {
+	if items.items[0].display != "the [::-][::r]match[::-]" {
 		t.Error("Incorrect processed line with single submatch")
 	}
-	if items.items[1].display != "no match, but the [::r]match[::-] here and not the match again" {
+	if items.items[1].display != "no match, but the [::-][::r]match[::-] here and not the match again" {
 		t.Error("Incorrect processed line with multiple submatches highlighting the second")
 	}
-	if items.items[2].display != "the [::r]match[::-], the mbtch, the mctch" {
+	if items.items[2].display != "the [::-][::r]match[::-], the mbtch, the mctch" {
 		t.Error("Incorrect processed line with multiple submatches highlighting the first")
 	}
 	if items.NumMatches() != 3 {
@@ -52,10 +52,10 @@ func TestProcessRegexp(t *testing.T) {
 	config.pattern = regexp.MustCompile("m[a-c]tch")
 	items = NewItemList(lines)
 
-	if items.items[0].display != "the [::r]match[::-]" {
+	if items.items[0].display != "the [::-][::r]match[::-]" {
 		t.Error("Incorrect processed line with single match")
 	}
-	if items.items[1].display != "no [::r]match[::-], but the match here and not the match again" {
+	if items.items[1].display != "no [::-][::r]match[::-], but the match here and not the match again" {
 		t.Error("Incorrect processed line with multiple matches highlighting the first")
 	}
 	if items.NumMatches() != 3 {
@@ -71,7 +71,7 @@ func TestProcessRegexp(t *testing.T) {
 	if items.items[1].display != "no match, but the match here and not the match again" {
 		t.Error("Incorrect processed line without any submatch")
 	}
-	if items.items[2].display != "the match, the mbt[::r]c[::-]h, the mctch" {
+	if items.items[2].display != "the match, the mbt[::-][::r]c[::-]h, the mctch" {
 		t.Error("Incorrect processed line with multiple submatches highlighting the first")
 	}
 	if items.NumMatches() != 1 {
@@ -81,7 +81,7 @@ func TestProcessRegexp(t *testing.T) {
 	config.pattern = regexp.MustCompile("m(at)(c(h))")
 	items = NewItemList(lines)
 
-	if items.items[0].display != "the m[::r]at[::-]ch" {
+	if items.items[0].display != "the m[::-][::r]at[::-]ch" {
 		t.Error("Incorrect processed line with many submatches")
 	}
 }
@@ -94,19 +94,19 @@ func TestProcessRegexpWithColors(t *testing.T) {
 	config.pattern = regexp.MustCompile("m[a-c]tch")
 	items := NewItemList(lines)
 
-	if items.items[0].display != "[green:]first[-:-:] [::r]match[::-]" {
+	if items.items[0].display != "[green:]first[-:-:] [::-][::r]match[::-]" {
 		t.Error("Incorrect processed colored line outside of colored region")
 	}
-	if items.items[1].display != "[green:]second [::r]match[::-][-:-:]" {
+	if items.items[1].display != "[green:]second [::-][::r]match[::-][-:-:]" {
 		t.Error("Incorrect processed colored line inside colored region")
 	}
-	if items.items[2].display != "[green:]second [::r]ma[-:-:]tch[::-]" {
+	if items.items[2].display != "[green:]second [::-][::r]ma[-:-:]tch[::-]" {
 		t.Error("Incorrect processed colored line intersecting with colored region")
 	}
-	if items.items[3].display != "second [::r]ma[green:]tch[::-][-:-:]" {
+	if items.items[3].display != "second [::-][::r]ma[green:]tch[::-][-:-:]" {
 		t.Error("Incorrect processed colored line intersecting with colored region")
 	}
-	if items.items[4].display != "second [::r]ma[green:]tc[-:-:]h[::-]" {
+	if items.items[4].display != "second [::-][::r]ma[green:]tc[-:-:]h[::-]" {
 		t.Error("Incorrect processed colored line intersecting with colored region")
 	}
 }
@@ -122,7 +122,7 @@ func TestProcessRegexpWithFunc(t *testing.T) {
 	}
 	items := NewItemList(lines)
 
-	if items.items[0].display != "the [::r]match[::-] MATCH" {
+	if items.items[0].display != "the [::-][::r]match[::-] MATCH" {
 		t.Error("Incorrect processed line with given function")
 	}
 

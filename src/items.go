@@ -73,7 +73,7 @@ func (item *Item) highlightFirstMatch(matches []string) bool {
 	// Check the match using the pattern function and highlight it if the result is true
 	if config.patternFunc == nil || config.patternFunc(match) {
 		item.match = match
-		highlighted := strings.Replace(matches[0], item.match, "[::r]" + item.match + "[::-]", 1)
+		highlighted := strings.Replace(matches[0], item.match, "[::-][::r]" + item.match + "[::-]", 1)
 		if strings.Contains(item.display, matches[0]) {
 			item.display = strings.Replace(item.display, matches[0], highlighted, 1)
 		} else {
