@@ -94,7 +94,7 @@ func (item *Item) PrintCommand() string {
 	return PrintCommand(item.match)
 }
 
-func (item *Item) RunCommand() (string, string) {
+func (item *Item) RunCommand() (string, string, string) {
 	return RunCommand(item.match)
 }
 

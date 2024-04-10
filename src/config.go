@@ -15,6 +15,7 @@ type Config struct {
 	filter bool
 	sort int
 	showProgramOutput bool
+	ignoreProgramError bool
 	test bool
 }
 
@@ -29,6 +30,7 @@ func NewConfig() *Config {
 		filter: false,
 		sort: 0,
 		showProgramOutput: false,
+		ignoreProgramError: false,
 		test: false,
 	}
 
@@ -49,6 +51,8 @@ func NewConfig() *Config {
 				config.sort = -1
 			case "--show-output":
 				config.showProgramOutput = true
+			case "--ignore-error":
+				config.ignoreProgramError = true
 			case "--line":
 				inputPattern = "^.*$"
 			case "--git-commit-hash":

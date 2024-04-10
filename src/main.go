@@ -49,7 +49,7 @@ func main() {
 		itemList.Sort(config.sort)
 	}
 
-	run(itemList, 0, "", "")
+	run(itemList, 0, "", "", "")
 }
 
 func PrintHelp() {
@@ -75,6 +75,7 @@ func PrintHelp() {
 	fmt.Println("   --dirname           Match the name of an existing directory")
 	fmt.Println("\nOther keyword OPTIONS:")
 	fmt.Println("\n   --show-output       Show the output (both stdout and stderr) of COMMAND")
+	fmt.Println("   --ignore-error      Ignore any error that occurred during execution of COMMAND")
 	fmt.Println("   --filter            Hide lines without a match")
 	fmt.Println("   --sort              Sort lines by their matches ignoring lines without a match")
 	fmt.Println("   --sort-rev          Reverse --sort")
@@ -143,10 +144,10 @@ func readFromPipe() []string {
 	return input
 }
 
-func run(itemList *ItemList, selectedIndex int, programExecuted string, programOutput string) {
+func run(itemList *ItemList, selectedIndex int, programExecuted string, programOutput string, exitStatus string) {
 	ui := initUi()
 	ui.fillList(itemList, selectedIndex)
-	ui.pageList.setStatus(programExecuted)
+	ui.pageList.setStatus(exitStatus)
 
 	if programExecuted != "" && config.showProgramOutput {
 		ui.setText(programExecuted, programOutput)
@@ -250,7 +251,7 @@ func (ui *Ui) fillList(itemList *ItemList, selectedIndex int) {
 		// Used for the tests
 		ui.app.Stop()
 		if config.program != "" && ui.pageList.list.GetItemCount() > 0 {
-			_, output := ui.pageList.itemList.Get(0).RunCommand()
+			_, output, _ := ui.pageList.itemList.Get(0).RunCommand()
 			if output != "" {
 				fmt.Println(output)
 			}
@@ -261,7 +262,7 @@ func (ui *Ui) fillList(itemList *ItemList, selectedIndex int) {
 	}
 }
 
-func (pageList *PageList) setStatus(programExecuted string) {
+func (pageList *PageList) setStatus(exitStatus string) {
 	info := "\n"
 	space := "     "
 
@@ -278,8 +279,11 @@ func (pageList *PageList) setStatus(programExecuted string) {
 
 	index := pageList.list.GetCurrentItem()
 	info += fmt.Sprintf("Line %d of %d", index + 1, pageList.list.GetItemCount())
-	if config.program != "" && programExecuted == "" && pageList.itemList.Get(index).HasMatch() {
+	if config.program != "" && pageList.itemList.Get(index).HasMatch() {
 		info += space + pageList.itemList.Get(index).PrintCommand()
+		if exitStatus != "" {
+			info += space + "Exit=" + exitStatus
+		}
 	}
 
 	pageList.status.SetText(info)
@@ -339,9 +343,9 @@ func (ui *Ui) lineClicked(index int, _ string, _ string, _ rune) {
 		ui.app.Stop()
 
 		// Run the program and fetch the output if it is not writing to stdout
-		program, output := item.RunCommand()
+		program, output, exitStatus := item.RunCommand()
 
 		// Restart the list view
-		run(ui.pageList.itemList, index, program, output)
+		run(ui.pageList.itemList, index, program, output, exitStatus)
 	}
 }

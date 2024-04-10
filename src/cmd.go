@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
-func RunCommand(match string) (string, string) {
+func RunCommand(match string) (string, string, string) {
 	args := prepareArguments(match)
 	cmd := exec.Command(config.program, args...)
 
@@ -30,20 +31,24 @@ func RunCommand(match string) (string, string) {
 		cmd.Stderr = os.Stderr
 	}
 
+	exitCode := 0
 	err = cmd.Run()
 
 	if err != nil {
 		// Try to forward the command's exit code
 		exitError, ok := err.(*exec.ExitError)
 		if ok {
-			os.Exit(exitError.ExitCode())
+			exitCode = exitError.ExitCode()
+			if !config.ignoreProgramError {
+				os.Exit(exitCode)
+			}
 		} else {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
 	}
 
-	return PrintCommand(match), buffer.String()
+	return PrintCommand(match), buffer.String(), strconv.Itoa(exitCode)
 }
 
 func PrintCommand(match string) string {
