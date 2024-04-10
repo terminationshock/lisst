@@ -80,6 +80,11 @@ func NewConfig() *Config {
 					stat, err := os.Stat(p)
 					return err == nil && stat.IsDir()
 				}
+			case "--completion":
+				if len(os.Args) > 3 {
+					printCompletion(os.Args[2], os.Args[3])
+				}
+				os.Exit(0)
 			default:
 				if strings.HasPrefix(arg, "--") {
 					fmt.Fprintln(os.Stderr, "Invalid command-line option " + arg)
@@ -124,3 +129,38 @@ func NewConfig() *Config {
 	return config
 }
 
+func printCompletion(line string, current string) {
+	if strings.HasPrefix(current, "--") {
+		printCompletionOption(line, current, []string{"--help", "--filter", "--show-output", "--ignore-error"})
+		printExclusiveCompletionOption(line, current, []string{"--sort", "--sort-rev"})
+		printExclusiveCompletionOption(line, current, []string{"--line", "--git-commit-hash", "--filename", "--filename-lineno", "--dirname"})
+	} else {
+		hasPattern := false
+		for _, pattern := range []string{"--line", "--git-commit-hash", "--filename", "--filename-lineno", "--dirname"} {
+			if strings.Contains(line, pattern + " ") {
+				hasPattern = true
+				break
+			}
+		}
+		if hasPattern {
+			fmt.Println("-")
+		}
+	}
+}
+
+func printCompletionOption(line string, current string, options []string) {
+	for _, option := range options {
+		if strings.HasPrefix(option, current) && !strings.Contains(line, option + " ") {
+			fmt.Println(option)
+		}
+	}
+}
+
+func printExclusiveCompletionOption(line string, current string, options []string) {
+	for _, option := range options {
+		if strings.Contains(line, option + " ") {
+			return
+		}
+	}
+	printCompletionOption(line, current, options)
+}
