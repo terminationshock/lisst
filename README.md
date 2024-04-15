@@ -45,6 +45,11 @@ See `lisst --help` for a complete list of supported keywords and more useful exa
 This program requires Go version 1.19 or later for building. You can build the self-contained executable yourself with `make`
 or you can download the artifact built from the latest release [here](https://github.com/terminationshock/lisst/releases/latest).
 
+If you work with *bash*, you might want to include the bash completion implemented for *lisst*:
+```bash
+source bash_completion.sh
+```
+
 ## Testing
 
 You can run all tests (unit and integration tests) with `make check`.
