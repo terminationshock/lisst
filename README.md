@@ -1,4 +1,5 @@
 [![pipeline status](https://github.com/terminationshock/lisst/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/terminationshock/lisst/actions/workflows/build_and_test.yml)
+[![build result](https://build.opensuse.org/projects/home:terminationshock/packages/lisst/badge.svg?type=default)](https://build.opensuse.org/package/show/home:terminationshock/lisst)
 [![license](https://img.shields.io/badge/license-MIT-informational)](LICENSE)
 [![Go](https://img.shields.io/badge/Go-1.19-informational)](https://go.dev/dl/)
 
@@ -50,23 +51,15 @@ You can use human-readable keywords for frequently used patterns. In the screenc
 the keyword `--git-commit-hash` is used for convenience instead of the actual regular expression.
 See `lisst --help` for a complete list of supported keywords and more useful examples.
 
-## Building
+## Installation
 
-This program requires Go version 1.19 or later for building. You can build the self-contained executable yourself with `make`
-or you can download the artifact built from the latest release [here](https://github.com/terminationshock/lisst/releases/latest).
-
-If you work with *bash*, you might want to include the bash completion implemented for *lisst*:
+You can download *lisst* as a prebuilt binary [here](https://github.com/terminationshock/lisst/releases/latest).
+If you work with *bash*, you might want to include the corresponding bash completion:
 ```bash
 source bash_completion.sh
 ```
 
-## Testing
-
-You can run all tests (unit and integration tests) with `make check`.
-
-## Installing
-
-*lisst* is also available as a package on OpenSUSE. To install it, add the corresponding repository:
+On OpenSUSE, you can alternatively install *lisst* as a package.
 
 ### OpenSUSE Leap 15.5 or later
 
@@ -83,6 +76,14 @@ zypper install lisst
 zypper addrepo --refresh https://download.opensuse.org/repositories/home:/terminationshock/openSUSE_Tumbleweed/ terminationshock
 zypper install lisst
 ```
+
+## Building
+
+You can build the executable yourself by running `make`. It requires Go version 1.19 or later for building.
+
+## Testing
+
+The tests (unit and integration tests) can be run with `make check`.
 
 ## License
 
