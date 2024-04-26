@@ -21,6 +21,14 @@ Each commit hash matching the regular expression `[0-9a-f]{7,40}` will be highli
 and hit the enter key, the command `git show <commit hash>` will be executed. When this command returns, the list will be shown again allowing you
 to select the next line of interest.
 
+The main advantage of *lisst* is its ability to interactively select lines. Often a combination of `grep` and `xargs` can achieve a somewhat similar
+effect, but much less convenient. The following command, for example, will also run `git show` for all commits, however, one after the other, which
+is typically not very useful:
+
+```bash
+git log --oneline | grep -E "[0-9a-f]{7,40}" -o | xargs -L 1 -p git show
+```
+
 *lisst* accepts all non-empty output piped into it and splits it on line breaks. Each line is matched against the given regular expression.
 The first match within a line is highlighted. The enter key triggers the upstream command only if the selected line contains a match.
 An arbitrary number of command line arguments can be added to the command. The highlighted match in the selected line is appended

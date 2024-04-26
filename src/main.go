@@ -81,7 +81,7 @@ func PrintHelp() {
 	fmt.Println("   --sort-rev          Reverse --sort")
 	fmt.Println("   --help              Display this help")
 	fmt.Println("\nExamples:")
-	fmt.Println("\n   git log --oneline | " + os.Args[0] + " \"\\b[0-9a-z]{7,40}\\b\" git show")
+	fmt.Println("\n   git log --oneline | " + os.Args[0] + " \"\\b[0-9a-f]{7,40}\\b\" git show")
 	fmt.Println("                       or")
 	fmt.Println("   git log --oneline | " + os.Args[0] + " --git-commit-hash git show")
 	fmt.Println("                       will display all commits, highlight all commit hashes, and")
