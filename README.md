@@ -4,7 +4,9 @@
 
 # lisst
 
-This tool displays the output of a program as an interactive list allowing you to launch another command for a selected line of interest.
+This tools reads from stdin and displays the input as a list. Each line is matched
+against a regular expression. Lines can be selected interactively to execute commands built
+upon selected matches.
 
 ![Screenshot](lisst.gif)
 
@@ -61,6 +63,26 @@ source bash_completion.sh
 ## Testing
 
 You can run all tests (unit and integration tests) with `make check`.
+
+## Installing
+
+*lisst* is also available as a package on OpenSUSE. To install it, add the corresponding repository:
+
+### OpenSUSE Leap 15.5 or later
+
+Replace `<Leap version>` below:
+
+```bash
+zypper addrepo --refresh https://download.opensuse.org/repositories/home:/terminationshock/<Leap version>/ terminationshock
+zypper install lisst
+```
+
+### OpenSUSE Tumbleweed
+
+```bash
+zypper addrepo --refresh https://download.opensuse.org/repositories/home:/terminationshock/openSUSE_Tumbleweed/ terminationshock
+zypper install lisst
+```
 
 ## License
 

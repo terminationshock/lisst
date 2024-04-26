@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 lisst_completion() {
     COMPREPLY=($(lisst --completion "$COMP_LINE" "$2"))
     if [ "${COMPREPLY[0]}" == "-" ]; then

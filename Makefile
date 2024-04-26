@@ -3,7 +3,7 @@
 exe=lisst
 
 $(exe): go-get
-	go build -o $(exe) src/*
+	go build -buildmode pie -ldflags "-s -w" -o $(exe) src/*
 
 go-get:
 	go get github.com/rivo/tview
