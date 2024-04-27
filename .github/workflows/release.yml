@@ -25,9 +25,21 @@ jobs:
     - name: Integration tests
       run: make integration-tests
 
+    - name: Build amd64
+      env:
+        GOOS: linux
+        GOARCH: amd64
+      run: make clean && make && tar -cvf lisst-amd64.tar lisst
+
+    - name: Build arm64
+      env:
+        GOOS: linux
+        GOARCH: arm64
+      run: make clean && make && tar -cvf lisst-arm64.tar lisst
+
     - name: Publish release
       uses: ncipollo/release-action@v1
       with:
-          artifacts: lisst
+          artifacts: lisst-*.tar
           makeLatest: true
           omitBody: true

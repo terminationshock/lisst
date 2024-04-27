@@ -53,7 +53,7 @@ See `lisst --help` for a complete list of supported keywords and more useful exa
 
 ## Installation
 
-You can download *lisst* as a prebuilt binary [here](https://github.com/terminationshock/lisst/releases/latest).
+You can download prebuilt binaries of *lisst* [here](https://github.com/terminationshock/lisst/releases/latest).
 If you work with *bash*, you might want to include the corresponding bash completion:
 ```bash
 source bash_completion.sh
