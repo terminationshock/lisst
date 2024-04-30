@@ -59,18 +59,10 @@ If you work with *bash*, you might want to include the corresponding bash comple
 source bash_completion.sh
 ```
 
-On OpenSUSE, you can alternatively install *lisst* as a package.
+On RPM-based distributions, you can alternatively install *lisst* as a package. See [this repo](https://download.opensuse.org/repositories/home:/terminationshock/)
+for all available options.
 
-### OpenSUSE Leap 15.5 or later
-
-Replace `<Leap version>` below:
-
-```bash
-zypper addrepo --refresh https://download.opensuse.org/repositories/home:/terminationshock/<Leap version>/ terminationshock
-zypper install lisst
-```
-
-### OpenSUSE Tumbleweed
+On OpenSUSE Tumbleweed, for example, run:
 
 ```bash
 zypper addrepo --refresh https://download.opensuse.org/repositories/home:/terminationshock/openSUSE_Tumbleweed/ terminationshock
