@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/user"
 	"regexp"
 	"strings"
 )
@@ -10,6 +11,7 @@ import (
 type Config struct {
 	pattern *regexp.Regexp
 	patternFunc func(string) bool
+	patternFuncInfo string
 	program string
 	programArgs []string
 	filter bool
@@ -25,6 +27,7 @@ func NewConfig() *Config {
 		patternFunc: func(_ string) bool {
 			return true
 		},
+		patternFuncInfo: "",
 		program: "",
 		programArgs: []string{},
 		filter: false,
@@ -57,12 +60,15 @@ func NewConfig() *Config {
 				inputPattern = "^.*$"
 			case "--git-commit-hash":
 				inputPattern = "\\b[0-9a-f]{7,40}\\b"
+			case "--time":
+				inputPattern = "(?:0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9])?"
 			case "--filename":
 				inputPattern = "[^\\s:]+"
 				config.patternFunc = func(p string) bool {
 					stat, err := os.Stat(p)
 					return err == nil && !stat.IsDir()
 				}
+				config.patternFuncInfo = "valid file"
 			case "--filename-lineno":
 				inputPattern = "[^\\s:]+:[1-9][0-9]*"
 				config.patternFunc = func(p string) bool {
@@ -74,12 +80,21 @@ func NewConfig() *Config {
 					stat, err := os.Stat(filename)
 					return err == nil && !stat.IsDir()
 				}
+				config.patternFuncInfo = "valid file"
 			case "--dirname":
 				inputPattern = "[^\\s:]+"
 				config.patternFunc = func(p string) bool {
 					stat, err := os.Stat(p)
 					return err == nil && stat.IsDir()
 				}
+				config.patternFuncInfo = "valid directory"
+			case "--user":
+				inputPattern = "[^\\s]+"
+				config.patternFunc = func(p string) bool {
+					u, err := user.Lookup(p)
+					return err == nil && u.Username == p
+				}
+				config.patternFuncInfo = "valid user"
 			case "--completion":
 				if len(os.Args) > 3 {
 					printCompletion(os.Args[2], os.Args[3])

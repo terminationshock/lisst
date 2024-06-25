@@ -69,10 +69,12 @@ func PrintHelp() {
 	fmt.Println("\nKeywords to replace PATTERN:")
 	fmt.Println("\n   --line              Match the whole line")
 	fmt.Println("   --git-commit-hash   Match a Git commit hash")
+	fmt.Println("   --time              Match a time as [H]H:MM[:SS]")
 	fmt.Println("   --filename          Match the name of an existing file")
 	fmt.Println("   --filename-lineno   Match the name of an existing file and a line number,")
 	fmt.Println("                       separated by a colon")
 	fmt.Println("   --dirname           Match the name of an existing directory")
+	fmt.Println("   --user              Match the name of an existing user")
 	fmt.Println("\nOther keyword OPTIONS:")
 	fmt.Println("\n   --show-output       Show the output (both stdout and stderr) of COMMAND")
 	fmt.Println("   --ignore-error      Ignore any error occurring during the execution of COMMAND")
@@ -269,16 +271,20 @@ func (pageList *PageList) setStatus(exitStatus string) {
 	if config.pattern != nil {
 		numMatches := pageList.itemList.NumMatches()
 		if numMatches > 1 {
-			info += fmt.Sprintf("%d matches with %s%s", numMatches, config.pattern, space)
+			info += fmt.Sprintf("%d matches with %s", numMatches, config.pattern)
 		} else if numMatches == 1 {
-			info += fmt.Sprintf("1 match with %s%s", config.pattern, space)
+			info += fmt.Sprintf("1 match with %s", config.pattern)
 		} else {
-			info += fmt.Sprintf("No match with %s%s", config.pattern, space)
+			info += fmt.Sprintf("No match with %s", config.pattern)
 		}
 	}
 
+	if config.patternFuncInfo != "" {
+		info += fmt.Sprintf(" as %s", config.patternFuncInfo)
+	}
+
 	index := pageList.list.GetCurrentItem()
-	info += fmt.Sprintf("Line %d of %d", index + 1, pageList.list.GetItemCount())
+	info += fmt.Sprintf("%sLine %d of %d", space, index + 1, pageList.list.GetItemCount())
 	if config.program != "" && pageList.itemList.Get(index).HasMatch() {
 		info += space + pageList.itemList.Get(index).PrintCommand()
 		if exitStatus != "" {

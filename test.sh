@@ -208,12 +208,24 @@ function run() {
         echo "test1" > test/EXPECT_$1
         diff test/RESULT_$1 test/EXPECT_$1
         ;;
+    34)
+        echo -e "test1 0:12\ntest2 23:59:59\n" | ./lisst --time > test/RESULT_$1
+        test $? -ne 0 && exit 1
+        echo -e "test1 [::-][::r]0:12[::-]\ntest2 [::-][::r]23:59:59[::-]" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
+    35)
+        echo -e "test1 foobar\ntest2 $USER\n" | ./lisst --user > test/RESULT_$1
+        test $? -ne 0 && exit 1
+        echo -e "test1 foobar\ntest2 [::-][::r]$USER[::-]" > test/EXPECT_$1
+        diff test/RESULT_$1 test/EXPECT_$1
+        ;;
     esac
 }
 
 if [ $# -eq 0 ]; then
     result=0
-    for i in {1..33}; do
+    for i in {1..35}; do
         echo "Test $i"
         run $i || { result=1; echo "   FAILED"; }
     done
