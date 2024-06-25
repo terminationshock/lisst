@@ -29,7 +29,7 @@ jobs:
       env:
         GOOS: linux
         GOARCH: amd64
-      run: make clean && make && tar -cvf lisst-amd64.tar lisst
+      run: make clean && make && tar -cvf lisst-x86-64.tar lisst
 
     - name: Build arm64
       env:

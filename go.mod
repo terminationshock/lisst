@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/gdamore/tcell/v2 v2.7.4
-	github.com/rivo/tview v0.0.0-20240426173458-c766eefb3803
+	github.com/rivo/tview v0.0.0-20240622152042-c38c796625fb
 )
 
 require (
