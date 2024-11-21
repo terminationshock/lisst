@@ -69,9 +69,9 @@ On the following Linux distributions, you can alternatively install *lisst* usin
 | OpenSUSE Tumbleweed | https://download.opensuse.org/repositories/home:/terminationshock/openSUSE_Tumbleweed |
 | Debian 12 | https://download.opensuse.org/repositories/home:/terminationshock/Debian_12 |
 
-Installation guides for the most common distributions are given below.
+Installation commands for the most common distributions are given below.
 
-### Ubuntu 24.04:
+### Ubuntu 24.04
 
 ```bash
 wget -qO- https://build.opensuse.org/projects/home:terminationshock/signing_keys/download?kind=gpg | sudo gpg --dearmor -o /etc/apt/keyrings/obs-terminationshock.gpg
@@ -80,14 +80,14 @@ apt update
 apt install lisst
 ```
 
-### OpenSUSE Leap:
+### OpenSUSE Leap
 
 ```bash
 zypper addrepo --refresh https://download.opensuse.org/repositories/home:/terminationshock/\$releasever terminationshock
 zypper install lisst
 ```
 
-### OpenSUSE Tumbleweed:
+### OpenSUSE Tumbleweed
 
 ```bash
 zypper addrepo --refresh https://download.opensuse.org/repositories/home:/terminationshock/openSUSE_Tumbleweed terminationshock
