@@ -59,13 +59,38 @@ If you work with *bash*, you might want to include the corresponding bash comple
 source bash_completion.sh
 ```
 
-On RPM-based distributions, you can alternatively install *lisst* as a package. See [this repo](https://download.opensuse.org/repositories/home:/terminationshock/)
-for all available options.
+On the following Linux distributions, you can alternatively install *lisst* using your package manager:
+| Distribution | Repository |
+| ------------ | ---------- |
+| Ubuntu 24.04 | https://download.opensuse.org/repositories/home:/terminationshock/xUbuntu_24.04 |
+| Ubuntu 24.10 | https://download.opensuse.org/repositories/home:/terminationshock/xUbuntu_24.10 |
+| OpenSUSE Leap 15.5 | https://download.opensuse.org/repositories/home:/terminationshock/15.5 |
+| OpenSUSE Leap 15.6 | https://download.opensuse.org/repositories/home:/terminationshock/15.6 |
+| OpenSUSE Tumbleweed | https://download.opensuse.org/repositories/home:/terminationshock/openSUSE_Tumbleweed |
+| Debian 12 | https://download.opensuse.org/repositories/home:/terminationshock/Debian_12 |
 
-On OpenSUSE Tumbleweed, for example, run:
+Installation guides for the most common distributions are given below.
+
+### Ubuntu 24.04:
 
 ```bash
-zypper addrepo --refresh https://download.opensuse.org/repositories/home:/terminationshock/openSUSE_Tumbleweed/ terminationshock
+wget -qO- https://build.opensuse.org/projects/home:terminationshock/signing_keys/download?kind=gpg | sudo gpg --dearmor -o /etc/apt/keyrings/obs-terminationshock.gpg
+echo "deb [signed-by=/etc/apt/keyrings/obs-terminationshock.gpg] https://download.opensuse.org/repositories/home:/terminationshock/xUbuntu_24.04/ ./" > /etc/apt/sources.list.d/obs-terminationshock.list
+apt update
+apt install lisst
+```
+
+### OpenSUSE Leap:
+
+```bash
+zypper addrepo --refresh https://download.opensuse.org/repositories/home:/terminationshock/\$releasever terminationshock
+zypper install lisst
+```
+
+### OpenSUSE Tumbleweed:
+
+```bash
+zypper addrepo --refresh https://download.opensuse.org/repositories/home:/terminationshock/openSUSE_Tumbleweed terminationshock
 zypper install lisst
 ```
 
