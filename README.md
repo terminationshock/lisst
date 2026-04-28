@@ -75,11 +75,11 @@ On the following Linux distributions, you can alternatively install *lisst* usin
 
 Installation commands for the most common distributions are given below.
 
-### Ubuntu 24.04
+### Ubuntu 26.04
 
 ```bash
 wget -qO- https://build.opensuse.org/projects/home:terminationshock/signing_keys/download?kind=gpg | sudo gpg --dearmor -o /etc/apt/keyrings/obs-terminationshock.gpg
-echo "deb [signed-by=/etc/apt/keyrings/obs-terminationshock.gpg] https://download.opensuse.org/repositories/home:/terminationshock/xUbuntu_24.04/ ./" > /etc/apt/sources.list.d/obs-terminationshock.list
+echo "deb [signed-by=/etc/apt/keyrings/obs-terminationshock.gpg] https://download.opensuse.org/repositories/home:/terminationshock/xUbuntu_26.04/ ./" > /etc/apt/sources.list.d/obs-terminationshock.list
 apt update
 apt install lisst
 ```
@@ -100,7 +100,7 @@ zypper install lisst
 
 ## Building
 
-You can build the executable yourself by running `make`. It requires Go version 1.19 or later for building.
+You can build the executable yourself by running `make`. It requires Go version 1.24 or later for building.
 
 ## Testing
 
