@@ -64,10 +64,14 @@ On the following Linux distributions, you can alternatively install *lisst* usin
 | ------------ | ---------- |
 | Ubuntu 24.04 | https://download.opensuse.org/repositories/home:/terminationshock/xUbuntu_24.04 |
 | Ubuntu 24.10 | https://download.opensuse.org/repositories/home:/terminationshock/xUbuntu_24.10 |
-| OpenSUSE Leap 15.5 | https://download.opensuse.org/repositories/home:/terminationshock/15.5 |
+| Ubuntu 25.04 | https://download.opensuse.org/repositories/home:/terminationshock/xUbuntu_25.04 |
+| Ubuntu 25.10 | https://download.opensuse.org/repositories/home:/terminationshock/xUbuntu_25.10 |
+| Ubuntu 26.04 | https://download.opensuse.org/repositories/home:/terminationshock/xUbuntu_26.04 |
 | OpenSUSE Leap 15.6 | https://download.opensuse.org/repositories/home:/terminationshock/15.6 |
+| OpenSUSE Leap 16.0 | https://download.opensuse.org/repositories/home:/terminationshock/16.0 |
 | OpenSUSE Tumbleweed | https://download.opensuse.org/repositories/home:/terminationshock/openSUSE_Tumbleweed |
 | Debian 12 | https://download.opensuse.org/repositories/home:/terminationshock/Debian_12 |
+| Debian 13 | https://download.opensuse.org/repositories/home:/terminationshock/Debian_13 |
 
 Installation commands for the most common distributions are given below.
 
